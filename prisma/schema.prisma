@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipoDocumento {
+  CEDULA
+  PASAPORTE
+}
+
+enum Sexo {
+  HOMBRE
+  MUJER
+}
+
+enum Genero {
+  MASCULINO
+  FEMENINO
+}
+
+enum EstadoCivil {
+  SOLTERO
+  CASADO
+  DIVORCIADO
+  UNION_LIBRE
+  VIUDO
+}
+
+enum Etnia {
+  INDIGENA
+  AFROECUATORIANO
+  NEGRO
+  MULATO
+  MONTUVIO
+  MESTIZO
+  BLANCO
+  OTRO
+  NO_REGISTRA
+}
+
+enum Discapacidad {
+  SI
+  NO
+}
+
+enum TipoMatricula {
+  ORDINARIA
+  EXTRAORDINARIA
+  ESPECIAL
+}
+
+enum NivelAcademico {
+  PRIMERO
+  SEGUNDO
+  TERCERO
+  CUARTO
+  QUINTO
+  SEXTO
+}
+
+enum HaRepetidoAlMenosUnaMateria {
+  SI
+  NO
+}
+
+enum HaPerdidoLaGratuidad {
+  SI
+  NO
+  NO_APLICA
+}
+
+enum Paralelo {
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  H
+  I
+  J
+  K
+  L
+  M
+  N
+  O
+  P
+  Q
+  R
+  S
+  T
+}
+
+enum RecibePensionDiferenciada {
+  SI
+  NO
+  NO_APLICA
+}
+
+enum EstudianteOcupacion {
+  SOLO_ESTUDIA
+  TRABAJA_Y_ESTUDIA
+}
+
+model PeriodoAcademico {
+  id Int @id @default(autoincrement())
+
+  // Duración del periodo académico en semanas
+  duracionPeriodoAcademico Int
+
+  estudiantes Estudiante[]
+}
+
+model Estudiante {
+  id Int @id @default(autoincrement())
+
+  numeroIdentificacion String
+  tipoDocumento        TipoDocumento
+
+  primerApellido       String
+  segundoApellido      String @default("NA")
+  primerNombre         String
+  segundoNombre        String @default("NA")
+
+  sexo                 Sexo
+  genero               Genero
+  estadoCivil          EstadoCivil
+  etnia                Etnia
+  pueblonacionalidadId Int
+
+  discapacidad            Discapacidad
+  porcentajeDiscapacidad String
+  numCarnetConadis       String
+
+  fechaNacimiento        DateTime
+
+  paisNacionalidadId     String
+  provinciaNacimientoId String
+  cantonNacimientoId    String
+
+  paisResidenciaId       String
+  provinciaResidenciaId String
+  cantonResidenciaId    String
+
+  fechaInicioCarrera     DateTime
+  fechaMatricula         DateTime
+
+  // Relación con periodo académico
+  periodoAcademicoId     Int
+  periodoAcademico       PeriodoAcademico @relation(fields: [periodoAcademicoId], references: [id])
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([numeroIdentificacion, tipoDocumento])
+}
