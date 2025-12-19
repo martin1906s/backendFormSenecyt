@@ -1,27 +1,30 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+// Enum Campo 2: Tipo de documento de identificación
 enum TipoDocumento {
   CEDULA
   PASAPORTE
 }
 
+// Enum Campo 7: Sexo biológico
 enum Sexo {
   HOMBRE
   MUJER
 }
 
+// Enum Campo 8: Género con el que se identifica
 enum Genero {
   MASCULINO
   FEMENINO
 }
 
+// Enum Campo 9: Estado civil
 enum EstadoCivil {
   SOLTERO
   CASADO
@@ -30,6 +33,7 @@ enum EstadoCivil {
   VIUDO
 }
 
+// Enum Campo 11: Etnia o autodenominación étnica
 enum Etnia {
   INDIGENA
   AFROECUATORIANO
@@ -42,17 +46,72 @@ enum Etnia {
   NO_REGISTRA
 }
 
+// Enum Campo 12: Tipo de sangre
+enum TipoSangre {
+  A_POSITIVO
+  A_NEGATIVO
+  B_POSITIVO
+  B_NEGATIVO
+  AB_POSITIVO
+  AB_NEGATIVO
+  O_POSITIVO
+  O_NEGATIVO
+  NO_REGISTRA
+}
+
+// Enum Campo 13: Indicador de discapacidad
 enum Discapacidad {
   SI
   NO
 }
 
+// Enum Campo 16: Tipo de discapacidad
+enum TipoDiscapacidad {
+  FISICA
+  INTELECTUAL
+  AUDITIVA
+  VISUAL
+  PSICOSOCIAL
+  MULTIPLE
+  NO_APLICA
+}
+
+// Enum Campo 24: Tipo de colegio
+enum TipoColegio {
+  FISCAL
+  FISCOMISIONAL
+  PARTICULAR
+  MUNICIPAL
+  NO_APLICA
+}
+
+// Enum Campo 25: Modalidad de la carrera
+enum ModalidadCarrera {
+  PRESENCIAL
+  SEMIPRESENCIAL
+  A_DISTANCIA
+  DUAL
+  NO_APLICA
+}
+
+// Enum Campo 26: Jornada de la carrera
+enum JornadaCarrera {
+  MATUTINA
+  VESPERTINA
+  NOCTURNA
+  FIN_DE_SEMANA
+  MIXTA
+  NO_APLICA
+}
+
+// Enum Campo 25: Tipo de matrícula
 enum TipoMatricula {
   ORDINARIA
   EXTRAORDINARIA
   ESPECIAL
 }
 
+// Enum Campo 26: Nivel académico
 enum NivelAcademico {
   PRIMERO
   SEGUNDO
@@ -62,17 +121,20 @@ enum NivelAcademico {
   SEXTO
 }
 
+// Enum Campo 27: Ha repetido al menos una materia
 enum HaRepetidoAlMenosUnaMateria {
   SI
   NO
 }
 
+// Enum Campo 28: Ha perdido la gratuidad
 enum HaPerdidoLaGratuidad {
   SI
   NO
   NO_APLICA
 }
 
+// Enum Campo 29: Paralelo o sección
 enum Paralelo {
   A
   B
@@ -96,59 +158,314 @@ enum Paralelo {
   T
 }
 
+// Enum Campo 30: Recibe pensión diferenciada
 enum RecibePensionDiferenciada {
   SI
   NO
   NO_APLICA
 }
 
+// Enum Campo 31: Ocupación del estudiante
 enum EstudianteOcupacion {
   SOLO_ESTUDIA
   TRABAJA_Y_ESTUDIA
 }
 
+// Enum Campo 32: Uso de ingresos del estudiante
+enum IngresosEstudiante {
+  FINANCIAR_ESTUDIOS
+  MANTENER_HOGAR
+  GASTOS_PERSONALES
+  NO_APLICA
+}
+
+// Enum Campo 33: Recibe bono de desarrollo
+enum BonoDesarrollo {
+  SI
+  NO
+}
+
+// Enum Campo 39: Ha realizado prácticas preprofesionales
+enum HaRealizadoPracticasPreprofesionales {
+  SI
+  NO
+}
+
+// Enum Campo 41: Entorno institucional de prácticas profesionales
+enum EntornoInstitucionalPracticasProfesionales {
+  PUBLICA
+  PRIVADA
+  ONG
+  OTRO
+  NO_APLICA
+}
+
+// Enum Campo 42: Sector económico de práctica profesional
+enum SectorEconomicoPracticaProfesional {
+  AGRICULTURA_GANADERIA
+  MINERIA
+  MANUFACTURA
+  CONSTRUCCION
+  COMERCIO
+  TRANSPORTE
+  ALOJAMIENTO_RESTAURANTES
+  INFORMACION_COMUNICACION
+  FINANCIERO_SEGUROS
+  INMOBILIARIA
+  PROFESIONAL_CIENTIFICO
+  ADMINISTRACION_SOPORTE
+  ADMINISTRACION_PUBLICA
+  EDUCACION
+  SALUD
+  ARTES_ENTRETENIMIENTO
+  OTROS_SERVICIOS
+  HOGARES_PRIVADOS
+  ORGANIZACIONES_INTERNACIONALES
+  NO_APLICA
+}
+
+// Enum Campo 38: Tipo de beca
+enum TipoBeca {
+  TOTAL
+  PARCIAL
+  NO_APLICA
+}
+
+// Enum Campo 44: Primera razón de beca (socioeconómica)
+enum PrimeraRazonBeca {
+  SOCIOECONOMICA
+  NO_APLICA
+}
+
+// Enum Campo 45: Segunda razón de beca (excelencia académica)
+enum SegundaRazonBeca {
+  EXCELENCIA_ACADEMICA
+  NO_APLICA
+}
+
+// Enum Campo 46: Tercera razón de beca (deportista)
+enum TerceraRazonBeca {
+  DEPORTISTA
+  NO_APLICA
+}
+
+// Enum Campo 47: Cuarta razón de beca (pueblos y nacionalidades)
+enum CuartaRazonBeca {
+  PUEBLOS_Y_NACIONALIDADES
+  NO_APLICA
+}
+
+// Enum Campo 47: Cuarta razón de beca (pueblos y nacionalidades)
+enum QuintaRazonBeca {
+  DISCAPACIDAD
+  NO_APLICA 
+}
+
+// Enum Campo 49: Sexta razón de beca (otra)
+enum SextaRazonBeca {
+  OTRA
+  NO_APLICA
+}
+
+// Enum Campo 53: Financiamiento de beca
+enum FinanciamientoBeca {
+  FONDOS_PROPIOS
+  TRANFERENCIA_DEL_ESTADO
+  DONACIONES
+  NO_APLICA
+}
+
+// Enum Campo 56: Participa en proyecto de vinculación con la sociedad
+enum ParticipaEnProyectoVinculacionSociedad {
+  SI
+  NO
+  NO_APLICA
+}
+
+// Enum Campo 57: Tipo de alcance del proyecto de vinculación
+enum TipoAlcanceProyectoVinculacion {
+  NACIONAL
+  PROVINCIAL
+  CANTONAL
+  PARROQUIAL
+  NO_APLICA
+}
+
+
+// Enum Campo 54: Nivel de formación del padre
+enum NivelFormacionPadre {
+  CENTRO_ALFABETIZACION
+  JARDIN_INFANTES
+  PRIMARIA
+  EDUCACION_BASICA
+  SECUNDARIA
+  EDUCACION_MEDIA
+  SUPERIOR_NO_UNIVERSITARIA
+  SUPERIOR_UNIVERSITARIA
+  POSTGRADO
+  NO_APLICA
+}
+
+// Enum Campo 55: Nivel de formación de la madre
+enum NivelFormacionMadre {
+  CENTRO_ALFABETIZACION
+  JARDIN_INFANTES
+  PRIMARIA
+  EDUCACION_BASICA
+  SECUNDARIA
+  EDUCACION_MEDIA
+  SUPERIOR_NO_UNIVERSITARIA
+  SUPERIOR_UNIVERSITARIA
+  POSTGRADO
+  NO_APLICA
+}
+
+
+// Modelo para almacenar información de periodos académicos
 model PeriodoAcademico {
   id Int @id @default(autoincrement())
-
-  // Duración del periodo académico en semanas
-  duracionPeriodoAcademico Int
 
   estudiantes Estudiante[]
 }
 
+// Modelo principal para almacenar información de estudiantes matriculados (Sistema GRIPP)
 model Estudiante {
   id Int @id @default(autoincrement())
 
-  numeroIdentificacion String
+  // Campo 1: Tipo de documento de identificación
   tipoDocumento        TipoDocumento
+  // Campo 2: Número de documento de identificación
+  numeroIdentificacion String
 
+  // Campo 3: Primer apellido del estudiante
   primerApellido       String
+  // Campo 4: Segundo apellido del estudiante
   segundoApellido      String @default("NA")
+  // Campo 5: Primer nombre del estudiante
   primerNombre         String
+  // Campo 6: Segundo nombre del estudiante
   segundoNombre        String @default("NA")
 
+  // Campo 7: Sexo del estudiante
   sexo                 Sexo
+  // Campo 8: Género del estudiante
   genero               Genero
+  // Campo 9: Estado civil
   estadoCivil          EstadoCivil
+  // Campo 10: Etnia
   etnia                Etnia
-  pueblonacionalidadId Int
-
+  // Campo 11: Pueblo y nacionalidad
+  puebloNacionalidadId String @default("NA")
+  // Campo 12: Tipo de sangre del estudiante
+  tipoSangre           TipoSangre
+  // Campo 13: Tiene discapacidad
   discapacidad            Discapacidad
-  porcentajeDiscapacidad String
-  numCarnetConadis       String
-
-  fechaNacimiento        DateTime
-
+  // Campo 14: Porcentaje de discapacidad
+  porcentajeDiscapacidad String @default("NA")
+  // Campo 15: Nro. Carnet de discapacidad
+  numCarnetConadis       String @default("NA")
+  // Campo 16: Tipo de discapacidad
+  tipoDiscapacidad     TipoDiscapacidad
+  // Campo 17: Fecha de nacimiento (Caracter 10)
+  fechaNacimiento        String
+  // Campo 18: País de nacionalidad
   paisNacionalidadId     String
-  provinciaNacimientoId String
+  // Campo 19: Provincia de nacimiento?
+  provinciaNacimientoId String @default("NA")
+  // Campo 20: Cantón de nacimiento
   cantonNacimientoId    String
-
+  // Campo 21: País de residencia
   paisResidenciaId       String
-  provinciaResidenciaId String
-  cantonResidenciaId    String
+  // Campo 22: Provincia de residencia
+  provinciaResidenciaId String @default("NA")
+  // Campo 23: Cantón de residencia
+  cantonResidenciaId    String @default("NA")
+  // Campo 24: Tipo de colegio
+  tipoColegioId        TipoColegio
+  // Campo 25: Modalidad de la carrera
+  modalidadCarrera     ModalidadCarrera
+  // Campo 26: Jornada de la carrera
+  jornadaCarrera       JornadaCarrera
+  // Campo 27: Fecha en que inició el estudiante la carrera (Caracter 10)
+  fechaInicioCarrera     String
+  // Campo 28: Fecha de matrícula (Caracter 10)
+  fechaMatricula         String
+  // Campo 29: Tipo de matrícula
+  tipoMatricula          TipoMatricula
+  // Campo 30: Nivel académico
+  nivelAcademico         NivelAcademico
+  // Campo 31: Número de semanas de duración del periodo académico
+  duracionPeriodoAcademico Int
+  // Campo 32: Ha repetido al menos una materia
+  haRepetidoAlMenosUnaMateria HaRepetidoAlMenosUnaMateria
+  // Campo 33: Paralelo
+  paralelo               Paralelo
+  // Campo 34: Ha perdido la gratuidad
+  haPerdidoLaGratuidad   HaPerdidoLaGratuidad
+  // Campo 35: Posee pensión diferenciada
+  recibePensionDiferenciada RecibePensionDiferenciada
 
-  fechaInicioCarrera     DateTime
-  fechaMatricula         DateTime
+  // Campo 36: El estudiante se encuentra dedicado a
+  estudianteOcupacion    EstudianteOcupacion
+  // Campo 37: El estudiante para qué emplea sus ingresos
+  ingresosEstudiante     IngresosEstudiante
+  // Campo 38: La familia del estudiante recibe el bono de desarrollo humano
+  bonoDesarrollo         BonoDesarrollo
+
+  // Campo 39: El estudiante ha realizado prácticas preprofesionales
+  haRealizadoPracticasPreprofesionales HaRealizadoPracticasPreprofesionales
+  // Campo 40: Horas de la última práctica preprofesional que realizó el estudiante
+  nroHorasPracticasPreprofesionalesPorPeriodo String @default("NA")
+  // Campo 41: Tipo de institución en el que realiza las prácticas preprofesionales
+  entornoInstitucionalPracticasProfesionales EntornoInstitucionalPracticasProfesionales
+  // Campo 42: Sector económico en el que realizó las prácticas preprofesionales
+  sectorEconomicoPracticaProfesional SectorEconomicoPracticaProfesional
+
+  // Campo 43: Tipo de beca que recibe el estudiante
+  tipoBeca               TipoBeca
+  // Campo 44: Primera razón de la beca
+  primeraRazonBeca       PrimeraRazonBeca
+  // Campo 45: Segunda razón de la beca
+  segundaRazonBeca       SegundaRazonBeca
+  // Campo 46: Tercera razón de la beca
+  terceraRazonBeca       TerceraRazonBeca
+  // Campo 47: Cuarta razón de la beca
+  cuartaRazonBeca        CuartaRazonBeca
+  // Campo 48: Quinta razón de la beca (Cadena de texto, 10)
+  quintaRazonBeca        QuintaRazonBeca
+  // Campo 49: Sexta razón de la beca
+  sextaRazonBeca         SextaRazonBeca
+  // Campo 50: Valor del monto de la beca
+  montoBeca              String @default("NA")
+  // Campo 51: Porcentaje de la beca que cubre el valor del arancel
+  porcentajeBecaCoberturaArancel String @default("NA")
+  // Campo 52: Porcentaje de la beca que cubre la manutención
+  porcentajeBecaCoberturaManutencion String @default("NA")
+  // Campo 53: Tipo de financiamiento de la beca
+  financiamientoBeca     FinanciamientoBeca?
+  // Campo 54: Valor del monto de la ayuda económica
+  montoAyudaEconomica    String @default("NA")
+  // Campo 55: Valor del monto de crédito educativo
+  montoCreditoEducativo  String @default("NA")
+
+  // Campo 56: Ha participado durante el periodo de un proyecto de vinculación social
+  participaEnProyectoVinculacionSociedad ParticipaEnProyectoVinculacionSociedad
+  // Campo 57: Alcance del proyecto de vinculación con la sociedad
+  tipoAlcanceProyectoVinculacion TipoAlcanceProyectoVinculacion?
+
+  // Campo 58: Correo electrónico del estudiante
+  correoElectronico      String @default("NA")
+  // Campo 59: Número de celular del estudiante
+  numeroCelular          String
+
+  // Campo 60: Nivel de formación del padre
+  nivelFormacionPadre    NivelFormacionPadre
+  // Campo 61: Nivel de formación de la madre
+  nivelFormacionMadre    NivelFormacionMadre
+  // Campo 62: Ingresos del hogar
+  ingresoTotalHogar      String @default("NA")
+  // Campo 63: Número de miembros del hogar
+  cantidadMiembrosHogar  Int
 
   // Relación con periodo académico
   periodoAcademicoId     Int
