@@ -9,12 +9,17 @@ export class EstudianteService {
 
   async create(createEstudianteDto: CreateEstudianteDto) {
     try {
-      // Crear o usar el período académico si existe
-      await this.prisma.periodoAcademico.upsert({
+      // Verificar que el período académico existe, si no existe crearlo
+      const periodoAcademico = await this.prisma.periodoAcademico.findUnique({
         where: { id: createEstudianteDto.periodoAcademicoId },
-        update: {}, // No actualizar nada si existe
-        create: { id: createEstudianteDto.periodoAcademicoId },
       });
+
+      if (!periodoAcademico) {
+        // Si no existe, crearlo (solo si el ID es válido)
+        await this.prisma.periodoAcademico.create({
+          data: { id: createEstudianteDto.periodoAcademicoId },
+        });
+      }
 
       return await this.prisma.estudiante.create({
         data: createEstudianteDto,
@@ -31,6 +36,11 @@ export class EstudianteService {
       if (error.code === 'P2003') {
         throw new NotFoundException(
           `Error con el período académico con ID ${createEstudianteDto.periodoAcademicoId}`,
+        );
+      }
+      if (error.code === 'ENETUNREACH' || error.code === 'ECONNREFUSED') {
+        throw new Error(
+          'Error de conexión a la base de datos. Verifica que DATABASE_URL esté configurada correctamente en Railway.',
         );
       }
       throw error;
