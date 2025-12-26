@@ -35,6 +35,9 @@ import {
   TipoAlcanceProyectoVinculacion,
   NivelFormacionPadre,
   NivelFormacionMadre,
+  Pais,
+  Provincia,
+  PuebloNacionalidad,
 } from '@prisma/client';
 
 export class CreateEstudianteDto {
@@ -51,16 +54,16 @@ export class CreateEstudianteDto {
   primerApellido: string;
 
   @IsString()
-  @IsOptional()
-  segundoApellido?: string;
+  @IsNotEmpty()
+  segundoApellido: string;
 
   @IsString()
   @IsNotEmpty()
   primerNombre: string;
 
   @IsString()
-  @IsOptional()
-  segundoNombre?: string;
+  @IsNotEmpty()
+  segundoNombre: string;
 
   @IsEnum(Sexo)
   @IsNotEmpty()
@@ -78,9 +81,9 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   etnia: Etnia;
 
-  @IsString()
-  @IsOptional()
-  puebloNacionalidadId?: string;
+  @IsEnum(PuebloNacionalidad)
+  @IsNotEmpty()
+  puebloNacionalidad: PuebloNacionalidad;
 
   @IsEnum(TipoSangre)
   @IsNotEmpty()
@@ -91,12 +94,12 @@ export class CreateEstudianteDto {
   discapacidad: Discapacidad;
 
   @IsString()
-  @IsOptional()
-  porcentajeDiscapacidad?: string;
+  @IsNotEmpty()
+  porcentajeDiscapacidad: string;
 
   @IsString()
-  @IsOptional()
-  numCarnetConadis?: string;
+  @IsNotEmpty()
+  numCarnetConadis: string;
 
   @IsEnum(TipoDiscapacidad)
   @IsNotEmpty()
@@ -106,29 +109,29 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   fechaNacimiento: string;
 
-  @IsString()
+  @IsEnum(Pais)
   @IsNotEmpty()
-  paisNacionalidadId: string;
+  paisNacionalidadId: Pais;
 
-  @IsString()
+  @IsEnum(Provincia)
   @IsOptional()
-  provinciaNacimientoId?: string;
+  provinciaNacimientoId?: Provincia;
 
   @IsString()
   @IsNotEmpty()
   cantonNacimientoId: string;
 
+  @IsEnum(Pais)
+  @IsNotEmpty()
+  paisResidenciaId: Pais;
+
+  @IsEnum(Provincia)
+  @IsNotEmpty()
+  provinciaResidenciaId: Provincia;
+
   @IsString()
   @IsNotEmpty()
-  paisResidenciaId: string;
-
-  @IsString()
-  @IsOptional()
-  provinciaResidenciaId?: string;
-
-  @IsString()
-  @IsOptional()
-  cantonResidenciaId?: string;
+  cantonResidenciaId: string;
 
   @IsEnum(TipoColegio)
   @IsNotEmpty()
@@ -195,8 +198,8 @@ export class CreateEstudianteDto {
   haRealizadoPracticasPreprofesionales: HaRealizadoPracticasPreprofesionales;
 
   @IsString()
-  @IsOptional()
-  nroHorasPracticasPreprofesionalesPorPeriodo?: string;
+  @IsNotEmpty()
+  nroHorasPracticasPreprofesionalesPorPeriodo: string;
 
   @IsEnum(EntornoInstitucionalPracticasProfesionales)
   @IsNotEmpty()
@@ -235,28 +238,28 @@ export class CreateEstudianteDto {
   sextaRazonBeca: SextaRazonBeca;
 
   @IsString()
-  @IsOptional()
-  montoBeca?: string;
+  @IsNotEmpty()
+  montoBeca: string;
 
   @IsString()
-  @IsOptional()
-  porcentajeBecaCoberturaArancel?: string;
+  @IsNotEmpty()
+  porcentajeBecaCoberturaArancel: string;
 
   @IsString()
-  @IsOptional()
-  porcentajeBecaCoberturaManutencion?: string;
+  @IsNotEmpty()
+  porcentajeBecaCoberturaManutencion: string;
 
   @IsEnum(FinanciamientoBeca)
   @IsOptional()
   financiamientoBeca?: FinanciamientoBeca;
 
   @IsString()
-  @IsOptional()
-  montoAyudaEconomica?: string;
+  @IsNotEmpty()
+  montoAyudaEconomica: string;
 
   @IsString()
-  @IsOptional()
-  montoCreditoEducativo?: string;
+  @IsNotEmpty()
+  montoCreditoEducativo: string;
 
   @IsEnum(ParticipaEnProyectoVinculacionSociedad)
   @IsNotEmpty()
@@ -267,8 +270,8 @@ export class CreateEstudianteDto {
   tipoAlcanceProyectoVinculacion?: TipoAlcanceProyectoVinculacion;
 
   @IsString()
-  @IsOptional()
-  correoElectronico?: string;
+  @IsNotEmpty()
+  correoElectronico: string;
 
   @IsString()
   @IsNotEmpty()
@@ -283,8 +286,8 @@ export class CreateEstudianteDto {
   nivelFormacionMadre: NivelFormacionMadre;
 
   @IsString()
-  @IsOptional()
-  ingresoTotalHogar?: string;
+  @IsNotEmpty()
+  ingresoTotalHogar: string;
 
   @IsInt()
   @IsNotEmpty()

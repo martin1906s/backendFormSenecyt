@@ -6,25 +6,350 @@ datasource db {
   provider = "postgresql"
 }
 
-// Enum Campo 2: Tipo de documento de identificación
+model PeriodoAcademico {
+  id          Int          @id @default(autoincrement())
+  estudiantes Estudiante[]
+}
+
+model Estudiante {
+  id                                          Int                                        @id @default(autoincrement())
+  tipoDocumento                               TipoDocumento
+  numeroIdentificacion                        String
+  primerApellido                              String
+  segundoApellido                             String                                     @default("NA")
+  primerNombre                                String
+  segundoNombre                               String                                     @default("NA")
+  sexo                                        Sexo
+  genero                                      Genero
+  estadoCivil                                 EstadoCivil
+  etnia                                       Etnia
+  tipoSangre                                  TipoSangre
+  discapacidad                                Discapacidad
+  porcentajeDiscapacidad                      String                                     @default("NA")
+  numCarnetConadis                            String                                     @default("NA")
+  tipoDiscapacidad                            TipoDiscapacidad
+  fechaNacimiento                             String
+  paisNacionalidadId                          Pais
+  cantonNacimientoId                          String
+  paisResidenciaId                            Pais
+  cantonResidenciaId                          String                                     @default("NA")
+  tipoColegioId                               TipoColegio
+  modalidadCarrera                            ModalidadCarrera
+  jornadaCarrera                              JornadaCarrera
+  fechaInicioCarrera                          String
+  fechaMatricula                              String
+  tipoMatricula                               TipoMatricula
+  nivelAcademico                              NivelAcademico
+  duracionPeriodoAcademico                    Int
+  haRepetidoAlMenosUnaMateria                 HaRepetidoAlMenosUnaMateria
+  paralelo                                    Paralelo
+  haPerdidoLaGratuidad                        HaPerdidoLaGratuidad
+  recibePensionDiferenciada                   RecibePensionDiferenciada
+  estudianteOcupacion                         EstudianteOcupacion
+  ingresosEstudiante                          IngresosEstudiante
+  bonoDesarrollo                              BonoDesarrollo
+  haRealizadoPracticasPreprofesionales        HaRealizadoPracticasPreprofesionales
+  nroHorasPracticasPreprofesionalesPorPeriodo String                                     @default("NA")
+  entornoInstitucionalPracticasProfesionales  EntornoInstitucionalPracticasProfesionales
+  sectorEconomicoPracticaProfesional          SectorEconomicoPracticaProfesional
+  tipoBeca                                    TipoBeca
+  primeraRazonBeca                            PrimeraRazonBeca
+  segundaRazonBeca                            SegundaRazonBeca
+  terceraRazonBeca                            TerceraRazonBeca
+  cuartaRazonBeca                             CuartaRazonBeca
+  quintaRazonBeca                             QuintaRazonBeca
+  sextaRazonBeca                              SextaRazonBeca
+  montoBeca                                   String                                     @default("NA")
+  porcentajeBecaCoberturaArancel              String                                     @default("NA")
+  porcentajeBecaCoberturaManutencion          String                                     @default("NA")
+  financiamientoBeca                          FinanciamientoBeca?
+  montoAyudaEconomica                         String                                     @default("NA")
+  montoCreditoEducativo                       String                                     @default("NA")
+  participaEnProyectoVinculacionSociedad      ParticipaEnProyectoVinculacionSociedad
+  tipoAlcanceProyectoVinculacion              TipoAlcanceProyectoVinculacion?
+  correoElectronico                           String                                     @default("NA")
+  numeroCelular                               String
+  nivelFormacionPadre                         NivelFormacionPadre
+  nivelFormacionMadre                         NivelFormacionMadre
+  ingresoTotalHogar                           String                                     @default("NA")
+  cantidadMiembrosHogar                       Int
+  periodoAcademicoId                          Int
+  createdAt                                   DateTime                                   @default(now())
+  updatedAt                                   DateTime                                   @updatedAt
+  puebloNacionalidad                          PuebloNacionalidad
+  provinciaNacimientoId                       Provincia?
+  provinciaResidenciaId                       Provincia
+  periodoAcademico                            PeriodoAcademico                           @relation(fields: [periodoAcademicoId], references: [id])
+
+  @@unique([numeroIdentificacion, tipoDocumento])
+}
+
 enum TipoDocumento {
   CEDULA
   PASAPORTE
 }
 
-// Enum Campo 7: Sexo biológico
+enum Canton {
+  OÑA
+  SANTA_ISABEL
+  NABON
+  GIRON
+  SAN_FERNANDO
+  PUCARA
+  SIGSIG
+  CAMILO_PONCE_ENRIQUEZ
+  CHORDELEG
+  GUALACEO
+  CUENCA
+  SEVILLA_DE_ORO
+  EL_PAN
+  GUACHAPALA
+  PAUTE
+  CHILLANES
+  SAN_MIGUEL
+  CHIMBO
+  CALUMA
+  GUARANDA
+  ECHEANDIA
+  LAS_NAVES
+  DELEG
+  AZOGUES
+  BIBLIAN
+  CAÑAR
+  EL_TAMBO
+  SUSCAL
+  LA_TRONCAL
+  BOLIVAR
+  MIRA
+  MONTUFAR
+  SAN_PEDRO_DE_HUACA
+  ESPEJO
+  TULCAN
+  PANGUA
+  SALCEDO
+  PUJILI
+  LATACUNGA
+  SAQUISILI
+  LA_MANA
+  SIGCHOS
+  CHUNCHI
+  CUMANDA
+  ALAUSI
+  PALLATANGA
+  GUAMOTE
+  CHAMBO
+  COLTA
+  RIOBAMBA
+  GUANO
+  PENIPE
+  MARCABELI
+  BALSAS
+  LAS_LAJAS
+  PORTOVELO
+  ZARUMA
+  PIÑAS
+  ATAHUALPA
+  HUAQUILLAS
+  ARENILLAS
+  SANTA_ROSA
+  CHILLA
+  PASAJE
+  MACHALA
+  EL_GUABO
+  QUININDE
+  MUISNE
+  ATACAMES
+  ESMERALDAS
+  RIOVERDE
+  ELOY_ALFARO
+  SAN_LORENZO
+  GUAYAQUIL
+  ALFREDO_BAQUERIZO_MORENO_JUJAN
+  BALAO
+  BALZAR
+  COLIMES
+  DAULE
+  DURAN
+  EL_EMPALME
+  EL_TRIUNFO
+  MILAGRO
+  NARANJAL
+  NARANJITO
+  PALESTINA
+  PEDRO_CARBO
+  SAMBORONDON
+  SANTA_LUCIA
+  URBINA_JADO
+  YAGUACHI
+  PLAYAS
+  SIMON_BOLIVAR
+  CORONEL_MARCELINO_MARIDUEÑA
+  LOMAS_DE_SARGENTILLO
+  NOBOL
+  GENERAL_ANTONIO_ELIZALDE
+  ISIDRO_AYORA
+  OTAVALO
+  COTACACHI
+  ANTONIO_ANTE
+  PIMAMPIRO
+  SAN_MIGUEL_DE_URCUQUI
+  IBARRA
+  ESPINDOLA
+  QUILANGA
+  ZAPOTILLO
+  MACARA
+  GONZANAMA
+  CALVAS
+  SOZORANGA
+  PINDAL
+  CELICA
+  PALTAS
+  OLMEDO
+  CATAMAYO
+  PUYANGO
+  LOJA
+  CHAGUARPAMBA
+  SARAGURO
+  BABAHOYO
+  BABA
+  MONTALVO
+  PUEBLOVIEJO
+  QUEVEDO
+  URDANETA
+  VENTANAS
+  VINCES
+  PALENQUE
+  BUENA_FE
+  VALENCIA
+  MOCACHE
+  QUINSALOMA
+  PUERTO_LOPEZ
+  PAJAN
+  CANTÓN_24_DE_MAYO
+  JIPIJAPA
+  SANTA_ANA
+  MONTECRISTI
+  MANTA
+  JARAMIJO
+  PORTOVIEJO
+  JUNIN
+  ROCAFUERTE
+  C_BOLIVAR
+  PICHINCHA
+  TOSAGUA
+  SUCRE
+  CHONE
+  SAN_VICENTE
+  EL_CARMEN
+  FLAVIO_ALFARO
+  JAMA
+  PEDERNALES
+  GUALAQUIZA
+  SAN_JUAN_BOSCO
+  LIMON_INDANZA
+  TIWINTZA
+  // LOGROÑO
+  SANTIAGO
+  SUCUA
+  MORONA
+  TAISHA
+  HUAMBOYA
+  PALORA
+  PABLO_SEXTO
+  CARLOS_JULIO_AROSEMENA_TOLA
+  TENA
+  ARCHIDONA
+  QUIJOS
+  EL_CHACO
+  PASTAZA
+  MERA
+  SANTA_CLARA
+  ARAJUNO
+  MEJIA
+  // RUMIÑAHUI
+  DISTRITO_METROPOLITANO_DE_QUITO
+  CAYAMBE
+  SAN_MIGUEL_DE_LOS_BANCOS
+  PEDRO_MONCAYO
+  PEDRO_VICENTE_MALDONADO
+  PUERTO_QUITO
+  MOCHA
+  QUERO
+  // BAÑOS_DE_AGUA_SANTA
+  CEVALLOS
+  TISALEO
+  PATATE
+  PELILEO
+  AMBATO
+  PILLARO
+  CHINCHIPE
+  PALANDA
+  ZAMORA
+  NANGARITZA
+  PAQUISHA
+  CENTINELA_DEL_CONDOR
+  YANTZAZA
+  EL_PANGUI
+  YACUAMBI
+  SAN_CRISTOBAL
+  SANTA_CRUZ
+  ISABELA
+  CUYABENO
+  SHUSHUFINDI
+  GONZALO_PIZARRO
+  LAGO_AGRIO
+  PUTUMAYO
+  CASCALES
+  SUCUMBIOS
+  AGUARICO
+  LORETO
+  ORELLANA
+  LA_JOYA_DE_LOS_SACHAS
+  SANTO_DOMINGO
+  LA_CONCORDIA
+  LA_LIBERTAD
+  SALINAS
+  SANTA_ELENA
+  ABDON_CALDERON
+  EL_PIEDRERO
+  JUVAL
+  SANTA_ROSA_DE_AGUA_CLARA
+  MATILDE_ESTHER
+  LAS_GOLONDRINAS
+}
+
+enum Provincia {
+  AZUAY
+  BOLIVAR
+  // CAÑAR
+  CARCHI
+  COTOPAXI
+  CHIMBORAZO
+  EL_ORO
+  ESMERALDAS
+  GUAYAS
+  IMBABURA
+  LOJA
+  LOS_RIOS
+  MANABI
+  MORONA_SANTIAGO
+  NAPO
+  PASTAZA
+  PICHINCHA
+  TUNGURAHUA
+  ZAMORA_CHINCHIPE
+}
+
 enum Sexo {
   HOMBRE
   MUJER
 }
 
-// Enum Campo 8: Género con el que se identifica
 enum Genero {
   MASCULINO
   FEMENINO
 }
 
-// Enum Campo 9: Estado civil
 enum EstadoCivil {
   SOLTERO
   CASADO
@@ -33,7 +358,6 @@ enum EstadoCivil {
   VIUDO
 }
 
-// Enum Campo 11: Etnia o autodenominación étnica
 enum Etnia {
   INDIGENA
   AFROECUATORIANO
@@ -46,7 +370,40 @@ enum Etnia {
   NO_REGISTRA
 }
 
-// Enum Campo 12: Tipo de sangre
+enum PuebloNacionalidad {
+  KICHWA
+  // AWÁ
+  CHACHI
+  // ÉPERA
+  // TSÁCHILA
+  ACHUAR
+  // COFÁN
+  SECOYA
+  SHIWIAR
+  SHUAR
+  WAORANI
+  // SÁPARA
+  MANTA
+  PALTA
+  CHIBULEO
+  // KAÑARI
+  KARANKI
+  KAYAMPI
+  KISAPINCHA
+  KITU_KARA
+  NATABUELA
+  OTAVALO
+  PANZALEO
+  // PURUHÁ
+  SALASACA
+  SARAGURO
+  TOMABELA
+  WARANKA
+  QUIJOS
+  PASTO
+  NO_APLICA
+}
+
 enum TipoSangre {
   A_POSITIVO
   A_NEGATIVO
@@ -59,13 +416,11 @@ enum TipoSangre {
   NO_REGISTRA
 }
 
-// Enum Campo 13: Indicador de discapacidad
 enum Discapacidad {
   SI
   NO
 }
 
-// Enum Campo 16: Tipo de discapacidad
 enum TipoDiscapacidad {
   FISICA
   INTELECTUAL
@@ -76,42 +431,37 @@ enum TipoDiscapacidad {
   NO_APLICA
 }
 
-// Enum Campo 24: Tipo de colegio
 enum TipoColegio {
   FISCAL
   FISCOMISIONAL
   PARTICULAR
   MUNICIPAL
+  EXTRANJERO
   NO_APLICA
 }
 
-// Enum Campo 25: Modalidad de la carrera
 enum ModalidadCarrera {
   PRESENCIAL
   SEMIPRESENCIAL
   A_DISTANCIA
   DUAL
-  NO_APLICA
+  LINEA
+  HIBRIDA
 }
 
-// Enum Campo 26: Jornada de la carrera
 enum JornadaCarrera {
   MATUTINA
   VESPERTINA
   NOCTURNA
-  FIN_DE_SEMANA
-  MIXTA
-  NO_APLICA
+  INTENSIVA 
 }
 
-// Enum Campo 25: Tipo de matrícula
 enum TipoMatricula {
   ORDINARIA
   EXTRAORDINARIA
   ESPECIAL
 }
 
-// Enum Campo 26: Nivel académico
 enum NivelAcademico {
   PRIMERO
   SEGUNDO
@@ -121,20 +471,17 @@ enum NivelAcademico {
   SEXTO
 }
 
-// Enum Campo 27: Ha repetido al menos una materia
 enum HaRepetidoAlMenosUnaMateria {
   SI
   NO
 }
 
-// Enum Campo 28: Ha perdido la gratuidad
 enum HaPerdidoLaGratuidad {
   SI
   NO
   NO_APLICA
 }
 
-// Enum Campo 29: Paralelo o sección
 enum Paralelo {
   A
   B
@@ -158,40 +505,34 @@ enum Paralelo {
   T
 }
 
-// Enum Campo 30: Recibe pensión diferenciada
 enum RecibePensionDiferenciada {
   SI
   NO
   NO_APLICA
 }
 
-// Enum Campo 31: Ocupación del estudiante
 enum EstudianteOcupacion {
   SOLO_ESTUDIA
   TRABAJA_Y_ESTUDIA
 }
 
-// Enum Campo 32: Uso de ingresos del estudiante
 enum IngresosEstudiante {
   FINANCIAR_ESTUDIOS
-  MANTENER_HOGAR
+  PARA_MANTENER_HOGAR
   GASTOS_PERSONALES
   NO_APLICA
 }
 
-// Enum Campo 33: Recibe bono de desarrollo
 enum BonoDesarrollo {
   SI
   NO
 }
 
-// Enum Campo 39: Ha realizado prácticas preprofesionales
 enum HaRealizadoPracticasPreprofesionales {
   SI
   NO
 }
 
-// Enum Campo 41: Entorno institucional de prácticas profesionales
 enum EntornoInstitucionalPracticasProfesionales {
   PUBLICA
   PRIVADA
@@ -200,74 +541,66 @@ enum EntornoInstitucionalPracticasProfesionales {
   NO_APLICA
 }
 
-// Enum Campo 42: Sector económico de práctica profesional
 enum SectorEconomicoPracticaProfesional {
-  AGRICULTURA_GANADERIA
-  MINERIA
-  MANUFACTURA
+  AGRICULTURA_GANADERIA_SILVICULTURA_Y_PESCA
+  EXPLOTACION_DE_MINAS_Y_CANTERAS
+  INDUSTRIAS_MANUFACTURERAS
+  SUMINISTRO_ELECTRICIDAD_GAS_VAPOR_AIRE_ACONDICIONADO
+  DISTRIBUCION_AGUA_ALCANTARILLADO_GESTION_DESECHOS_SANEAMIENTO
   CONSTRUCCION
-  COMERCIO
-  TRANSPORTE
-  ALOJAMIENTO_RESTAURANTES
-  INFORMACION_COMUNICACION
-  FINANCIERO_SEGUROS
-  INMOBILIARIA
-  PROFESIONAL_CIENTIFICO
-  ADMINISTRACION_SOPORTE
-  ADMINISTRACION_PUBLICA
-  EDUCACION
-  SALUD
-  ARTES_ENTRETENIMIENTO
-  OTROS_SERVICIOS
-  HOGARES_PRIVADOS
-  ORGANIZACIONES_INTERNACIONALES
+  COMERCIO_MAYOR_MENOR_REPARACION_VEHICULOS_AUTOMOTORES
+  TRANSPORTE_Y_ALMACENAMIENTO
+  ALOJAMIENTO_Y_SERVICIO_DE_COMIDAS
+  INFORMACION_Y_COMUNICACION
+  ACTIVIDADES_FINANCIERAS_Y_DE_SEGUROS
+  ACTIVIDADES_INMOBILIARIAS
+  ACTIVIDADES_PROFESIONALES_CIENTIFICAS_Y_TECNICAS
+  SERVICIOS_ADMINISTRATIVOS_Y_DE_APOYO
+  ADMINISTRACION_PUBLICA_Y_DEFENSA
+  ENSEÑANZA
+  ATENCION_SALUD_HUMANA_Y_ASISTENCIA_SOCIAL
+  ARTES_ENTRETENIMIENTO_Y_RECREACION
+  OTRAS_ACTIVIDADES_DE_SERVICIOS
+  HOGARES_PRODUCTORES_BIENES_SERVICIOS_USO_PROPIO
   NO_APLICA
 }
 
-// Enum Campo 38: Tipo de beca
 enum TipoBeca {
   TOTAL
   PARCIAL
   NO_APLICA
 }
 
-// Enum Campo 44: Primera razón de beca (socioeconómica)
 enum PrimeraRazonBeca {
   SOCIOECONOMICA
   NO_APLICA
 }
 
-// Enum Campo 45: Segunda razón de beca (excelencia académica)
 enum SegundaRazonBeca {
   EXCELENCIA_ACADEMICA
   NO_APLICA
 }
 
-// Enum Campo 46: Tercera razón de beca (deportista)
 enum TerceraRazonBeca {
   DEPORTISTA
   NO_APLICA
 }
 
-// Enum Campo 47: Cuarta razón de beca (pueblos y nacionalidades)
 enum CuartaRazonBeca {
   PUEBLOS_Y_NACIONALIDADES
   NO_APLICA
 }
 
-// Enum Campo 47: Cuarta razón de beca (pueblos y nacionalidades)
 enum QuintaRazonBeca {
   DISCAPACIDAD
-  NO_APLICA 
+  NO_APLICA
 }
 
-// Enum Campo 49: Sexta razón de beca (otra)
 enum SextaRazonBeca {
   OTRA
   NO_APLICA
 }
 
-// Enum Campo 53: Financiamiento de beca
 enum FinanciamientoBeca {
   FONDOS_PROPIOS
   TRANFERENCIA_DEL_ESTADO
@@ -275,14 +608,12 @@ enum FinanciamientoBeca {
   NO_APLICA
 }
 
-// Enum Campo 56: Participa en proyecto de vinculación con la sociedad
 enum ParticipaEnProyectoVinculacionSociedad {
   SI
   NO
   NO_APLICA
 }
 
-// Enum Campo 57: Tipo de alcance del proyecto de vinculación
 enum TipoAlcanceProyectoVinculacion {
   NACIONAL
   PROVINCIAL
@@ -291,8 +622,6 @@ enum TipoAlcanceProyectoVinculacion {
   NO_APLICA
 }
 
-
-// Enum Campo 54: Nivel de formación del padre
 enum NivelFormacionPadre {
   CENTRO_ALFABETIZACION
   JARDIN_INFANTES
@@ -302,11 +631,10 @@ enum NivelFormacionPadre {
   EDUCACION_MEDIA
   SUPERIOR_NO_UNIVERSITARIA
   SUPERIOR_UNIVERSITARIA
-  POSTGRADO
+  POSGRADO
   NO_APLICA
 }
 
-// Enum Campo 55: Nivel de formación de la madre
 enum NivelFormacionMadre {
   CENTRO_ALFABETIZACION
   JARDIN_INFANTES
@@ -320,159 +648,253 @@ enum NivelFormacionMadre {
   NO_APLICA
 }
 
-
-// Modelo para almacenar información de periodos académicos
-model PeriodoAcademico {
-  id Int @id @default(autoincrement())
-
-  estudiantes Estudiante[]
-}
-
-// Modelo principal para almacenar información de estudiantes matriculados (Sistema GRIPP)
-model Estudiante {
-  id Int @id @default(autoincrement())
-
-  // Campo 1: Tipo de documento de identificación
-  tipoDocumento        TipoDocumento
-  // Campo 2: Número de documento de identificación
-  numeroIdentificacion String
-
-  // Campo 3: Primer apellido del estudiante
-  primerApellido       String
-  // Campo 4: Segundo apellido del estudiante
-  segundoApellido      String @default("NA")
-  // Campo 5: Primer nombre del estudiante
-  primerNombre         String
-  // Campo 6: Segundo nombre del estudiante
-  segundoNombre        String @default("NA")
-
-  // Campo 7: Sexo del estudiante
-  sexo                 Sexo
-  // Campo 8: Género del estudiante
-  genero               Genero
-  // Campo 9: Estado civil
-  estadoCivil          EstadoCivil
-  // Campo 10: Etnia
-  etnia                Etnia
-  // Campo 11: Pueblo y nacionalidad
-  puebloNacionalidadId String @default("NA")
-  // Campo 12: Tipo de sangre del estudiante
-  tipoSangre           TipoSangre
-  // Campo 13: Tiene discapacidad
-  discapacidad            Discapacidad
-  // Campo 14: Porcentaje de discapacidad
-  porcentajeDiscapacidad String @default("NA")
-  // Campo 15: Nro. Carnet de discapacidad
-  numCarnetConadis       String @default("NA")
-  // Campo 16: Tipo de discapacidad
-  tipoDiscapacidad     TipoDiscapacidad
-  // Campo 17: Fecha de nacimiento (Caracter 10)
-  fechaNacimiento        String
-  // Campo 18: País de nacionalidad
-  paisNacionalidadId     String
-  // Campo 19: Provincia de nacimiento?
-  provinciaNacimientoId String @default("NA")
-  // Campo 20: Cantón de nacimiento
-  cantonNacimientoId    String
-  // Campo 21: País de residencia
-  paisResidenciaId       String
-  // Campo 22: Provincia de residencia
-  provinciaResidenciaId String @default("NA")
-  // Campo 23: Cantón de residencia
-  cantonResidenciaId    String @default("NA")
-  // Campo 24: Tipo de colegio
-  tipoColegioId        TipoColegio
-  // Campo 25: Modalidad de la carrera
-  modalidadCarrera     ModalidadCarrera
-  // Campo 26: Jornada de la carrera
-  jornadaCarrera       JornadaCarrera
-  // Campo 27: Fecha en que inició el estudiante la carrera (Caracter 10)
-  fechaInicioCarrera     String
-  // Campo 28: Fecha de matrícula (Caracter 10)
-  fechaMatricula         String
-  // Campo 29: Tipo de matrícula
-  tipoMatricula          TipoMatricula
-  // Campo 30: Nivel académico
-  nivelAcademico         NivelAcademico
-  // Campo 31: Número de semanas de duración del periodo académico
-  duracionPeriodoAcademico Int
-  // Campo 32: Ha repetido al menos una materia
-  haRepetidoAlMenosUnaMateria HaRepetidoAlMenosUnaMateria
-  // Campo 33: Paralelo
-  paralelo               Paralelo
-  // Campo 34: Ha perdido la gratuidad
-  haPerdidoLaGratuidad   HaPerdidoLaGratuidad
-  // Campo 35: Posee pensión diferenciada
-  recibePensionDiferenciada RecibePensionDiferenciada
-
-  // Campo 36: El estudiante se encuentra dedicado a
-  estudianteOcupacion    EstudianteOcupacion
-  // Campo 37: El estudiante para qué emplea sus ingresos
-  ingresosEstudiante     IngresosEstudiante
-  // Campo 38: La familia del estudiante recibe el bono de desarrollo humano
-  bonoDesarrollo         BonoDesarrollo
-
-  // Campo 39: El estudiante ha realizado prácticas preprofesionales
-  haRealizadoPracticasPreprofesionales HaRealizadoPracticasPreprofesionales
-  // Campo 40: Horas de la última práctica preprofesional que realizó el estudiante
-  nroHorasPracticasPreprofesionalesPorPeriodo String @default("NA")
-  // Campo 41: Tipo de institución en el que realiza las prácticas preprofesionales
-  entornoInstitucionalPracticasProfesionales EntornoInstitucionalPracticasProfesionales
-  // Campo 42: Sector económico en el que realizó las prácticas preprofesionales
-  sectorEconomicoPracticaProfesional SectorEconomicoPracticaProfesional
-
-  // Campo 43: Tipo de beca que recibe el estudiante
-  tipoBeca               TipoBeca
-  // Campo 44: Primera razón de la beca
-  primeraRazonBeca       PrimeraRazonBeca
-  // Campo 45: Segunda razón de la beca
-  segundaRazonBeca       SegundaRazonBeca
-  // Campo 46: Tercera razón de la beca
-  terceraRazonBeca       TerceraRazonBeca
-  // Campo 47: Cuarta razón de la beca
-  cuartaRazonBeca        CuartaRazonBeca
-  // Campo 48: Quinta razón de la beca (Cadena de texto, 10)
-  quintaRazonBeca        QuintaRazonBeca
-  // Campo 49: Sexta razón de la beca
-  sextaRazonBeca         SextaRazonBeca
-  // Campo 50: Valor del monto de la beca
-  montoBeca              String @default("NA")
-  // Campo 51: Porcentaje de la beca que cubre el valor del arancel
-  porcentajeBecaCoberturaArancel String @default("NA")
-  // Campo 52: Porcentaje de la beca que cubre la manutención
-  porcentajeBecaCoberturaManutencion String @default("NA")
-  // Campo 53: Tipo de financiamiento de la beca
-  financiamientoBeca     FinanciamientoBeca?
-  // Campo 54: Valor del monto de la ayuda económica
-  montoAyudaEconomica    String @default("NA")
-  // Campo 55: Valor del monto de crédito educativo
-  montoCreditoEducativo  String @default("NA")
-
-  // Campo 56: Ha participado durante el periodo de un proyecto de vinculación social
-  participaEnProyectoVinculacionSociedad ParticipaEnProyectoVinculacionSociedad
-  // Campo 57: Alcance del proyecto de vinculación con la sociedad
-  tipoAlcanceProyectoVinculacion TipoAlcanceProyectoVinculacion?
-
-  // Campo 58: Correo electrónico del estudiante
-  correoElectronico      String @default("NA")
-  // Campo 59: Número de celular del estudiante
-  numeroCelular          String
-
-  // Campo 60: Nivel de formación del padre
-  nivelFormacionPadre    NivelFormacionPadre
-  // Campo 61: Nivel de formación de la madre
-  nivelFormacionMadre    NivelFormacionMadre
-  // Campo 62: Ingresos del hogar
-  ingresoTotalHogar      String @default("NA")
-  // Campo 63: Número de miembros del hogar
-  cantidadMiembrosHogar  Int
-
-  // Relación con periodo académico
-  periodoAcademicoId     Int
-  periodoAcademico       PeriodoAcademico @relation(fields: [periodoAcademicoId], references: [id])
-
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-
-  @@unique([numeroIdentificacion, tipoDocumento])
+enum Pais {
+  // AFGANISTÁN
+  ALBANIA
+  ALEMANIA
+  ANDORRA
+  ANGOLA
+  ANGUILA
+  ANTIGUA_Y_BARBUDA
+  ARABIA_SAUDITA
+  ARGELIA
+  ARGENTINA
+  ARMENIA
+  ARUBA
+  AUSTRALIA
+  AUSTRIA
+  // AZERBAİYÁN
+  BAHAMAS
+  BAHREIN
+  BANGLADESH
+  BARBADOS
+  // BÉLGICA
+  BELICE
+  BENIN
+  BERMUDAS
+  BIELORRUSIA
+  BOLIVIA
+  BONAIRE_SAN_EUSTAQUIO_Y_SABA
+  BOSNIA_Y_HERZEGOVINA
+  BOTSWANA
+  BRASIL
+  BRUNEI_DARUSSALAM
+  BULGARIA
+  BURKINA_FASO
+  BURUNDI
+  // BUTÁN
+  CABO_VERDE
+  CAMBOYA
+  // CAMERÚN
+  CANADA
+  CHAD
+  CHILE
+  CHINA
+  CHIPRE
+  COLOMBIA
+  COMORAS
+  CONGO
+  COREA_DEL_NORTE
+  COREA_DEL_SUR
+  COSTA_DE_MARFIL
+  COSTA_RICA
+  CROACIA
+  CUBA
+  // CURAÇAO
+  DINAMARCA
+  DJIBOUTI
+  DOMINICA
+  ECUADOR
+  EGIPTO
+  EL_SALVADOR
+  EL_VATICANO
+  // EMIRATOS_ÁRABES_UNIDOS
+  ERITREA
+  ESLOVAQUIA
+  ESLOVENIA
+  // ESPAÑA
+  ESTADO_DE_PALESTINA
+  // ESTADOS_UNIDOS_DE_AMÉRICA
+  ESTONIA
+  // ETIOPÍA
+  FIYI
+  FILIPINAS
+  FINLANDIA
+  FRANCIA
+  // GABÓN
+  GAMBIA
+  GEORGIA
+  GHANA
+  GIBRALTAR
+  GRANADA
+  GRECIA
+  GROENLANDIA
+  GUADALUPE
+  GUAM
+  GUATEMALA
+  GUAYANA_FRANCESA
+  GUERNSEY
+  GUINEA
+  GUINEA_ECUATORIAL
+  GUINEA_BISSAU
+  GUYANA
+  // HAITÍ
+  HONDURAS
+  HONG_KONG
+  // HUNGRÍA
+  INDIA
+  INDONESIA
+  IRAK
+  // IRÁN
+  IRLANDA
+  ISLA_DE_MAN
+  ISLA_NORFOLK
+  ISLANDIA
+  // ISLAS_ÅLAND
+  // ISLAS_CAIMÁN
+  ISLAS_COOK
+  ISLAS_FEROE
+  ISLAS_MALVINAS_FALKLAND
+  ISLAS_MARIANAS_DEL_NORTE
+  ISLAS_MARSHALL
+  // ISLAS_SALOMÓN
+  ISLAS_TURCAS_Y_CAICOS
+  // ISLAS_VÍRGENES_AMERICANAS
+  // ISLAS_VÍRGENES_BRITÁNICAS
+  ISLAS_WALLIS_Y_FUTUNA
+  ISRAEL
+  ITALIA
+  JAMAICA
+  // JAPÓN
+  JERSEY
+  JORDANIA
+  // KAZAJSTÁN
+  KENYA
+  // KIRGUISTÁN
+  KIRIBATI
+  KUWAIT
+  // LA_EX_REPÚBLICA_YUGOSLAVA_DE_MACEDONIA
+  LESOTO
+  LETONIA
+  // LÍBANO
+  LIBERIA
+  LIBIA
+  LIECHTENSTEIN
+  LITUANIA
+  LUXEMBURGO
+  MACAO
+  MADAGASCAR
+  MALASIA
+  MALAUI
+  MALDIVAS
+  // MALÍ
+  MALTA
+  MARRUECOS
+  MARTINICA
+  MAURICIO
+  MAURITANIA
+  MAYOTTE
+  // MÉXICO
+  MICRONESIA
+  // MÓNACO
+  MONGOLIA
+  MONTENEGRO
+  MONTSERRAT
+  MOZAMBIQUE
+  MYANMAR
+  NAMIBIA
+  NAURU
+  NEPAL
+  NICARAGUA
+  // NÍGER
+  NIGERIA
+  NIUE
+  NORUEGA
+  NUEVA_CALEDONIA
+  NUEVA_ZELANDA
+  // OMÁN
+  // PAÍSES_BAJOS
+  // PAKISTÁN
+  PALAU
+  // PANAMÁ
+  // PAPÚA_NUEVA_GUINEA
+  PARAGUAY
+  // PERÚ
+  PITCAIRN
+  POLINESIA_FRANCESA
+  POLONIA
+  PORTUGAL
+  PUERTO_RICO
+  QATAR
+  // REINO_UNIDO_DE_GRAN_BRETAÑA_E_IRLANDA_DEL_NORTE
+  // REPÚBLICA_ÁRABE_SIRIA
+  // REPÚBLICA_CENTROAFRICANA
+  // REPÚBLICA_CHECA
+  // REPÚBLICA_DE_MOLDOVIA
+  // REPÚBLICA_DEMOCRÁTICA_DEL_CONGO
+  // REPÚBLICA_DEMOCRÁTICA_POPULAR_LAO
+  // REPÚBLICA_DOMINICANA
+  // REPÚBLICA_UNIDA_DE_TANZANIA
+  // RÉUNION
+  // RUMANÍA
+  RUSIA
+  RWANDA
+  // SÁHARA_OCCIDENTAL
+  // SAINT_BARTHÉLEMY
+  SAINT_MARTIN
+  SAMOA
+  SAMOA_AMERICANA
+  // SAN_CRISTÓBAL_Y_NIEVES
+  SAN_MARINO
+  // SAN_PEDRO_Y_MIQUELÓN
+  SAN_VICENTE_Y_LAS_GRANADINAS
+  SANTA_ELENA
+  // SANTA_LUCÍA
+  // SANTO_TOMÉ_Y_PRÍNCIPE
+  SENEGAL
+  SERBIA
+  SEYCHELLES
+  SIERRA_LEONA
+  SINGAPUR
+  SINT_MAARTEN
+  SOMALIA
+  SRI_LANKA
+  // SUDÁFRICA
+  // SUDÁN
+  // SUDÁN_DEL_SUR
+  SUECIA
+  SUIZA
+  SURINAME
+  SVALBARD_Y_JAN_MAYEN
+  SWAZILANDIA
+  TAILANDIA
+  // TAYIKISTÁN
+  TIMOR_LESTE
+  TOGO
+  TOKELAU
+  TONGA
+  TRINIDAD_Y_TOBAGO
+  // TÚNEZ
+  // TURKMENISTÁN
+  // TURQUÍA
+  TUVALU
+  UCRANIA
+  UGANDA
+  URUGUAY
+  // UZBEKISTÁN
+  VANUATU
+  VENEZUELA
+  VIET_NAM
+  YEMEN
+  ZAMBIA
+  ZIMBABWE
+  // ANTÁRTIDA
+  ISLA_BOUVET
+  // TERRITORIO_BRITÁNICO_DE_LA_OCÉANO_ÍNDICO
+  // TAIWÁN
+  ISLA_DE_NAVIDAD
+  ISLAS_COCOS
+  GEORGIA_DEL_SUR_Y_LAS_ISLAS_SANDWICH_DEL_SUR
+  TERRITORIOS_AUSTRALES_FRANCES
+  NO_REGISTRA
 }
