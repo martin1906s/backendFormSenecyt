@@ -406,7 +406,6 @@ enum TipoSangre {
   AB_NEGATIVO
   O_POSITIVO
   O_NEGATIVO
-  NO_REGISTRA
 }
 
 enum Discapacidad {
@@ -419,7 +418,7 @@ enum TipoDiscapacidad {
   INTELECTUAL
   AUDITIVA
   VISUAL
-  PSICOSOCIAL
+  MENTAL
   OTRA
   NO_APLICA
 }
