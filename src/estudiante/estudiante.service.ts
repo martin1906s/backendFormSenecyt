@@ -9,10 +9,18 @@ export class EstudianteService {
 
   async create(createEstudianteDto: CreateEstudianteDto) {
     try {
-      return await this.prisma.estudiante.create({
+      console.log('Creando estudiante con datos:', JSON.stringify(createEstudianteDto, null, 2));
+      const result = await this.prisma.estudiante.create({
         data: createEstudianteDto,
       });
+      console.log('Estudiante creado exitosamente:', result.id);
+      return result;
     } catch (error) {
+      console.error('Error al crear estudiante:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      console.error('Error meta:', error.meta);
+      
       if (error.code === 'P2002') {
         throw new ConflictException(
           'Ya existe un estudiante con esta identificación y tipo de documento',
@@ -23,7 +31,10 @@ export class EstudianteService {
           'Error de conexión a la base de datos. Verifica que DATABASE_URL esté configurada correctamente en Railway.',
         );
       }
-      throw error;
+      // Lanzar error con más información para debugging
+      throw new Error(
+        `Error al crear estudiante: ${error.message || 'Error desconocido'}. Code: ${error.code || 'N/A'}. Meta: ${JSON.stringify(error.meta || {})}`,
+      );
     }
   }
 

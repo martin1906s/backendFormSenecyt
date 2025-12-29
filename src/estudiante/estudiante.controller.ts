@@ -60,7 +60,12 @@ export class EstudianteController {
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(@Body() createEstudianteDto: CreateEstudianteDto) {
-    return this.estudianteService.create(createEstudianteDto);
+    try {
+      return this.estudianteService.create(createEstudianteDto);
+    } catch (error) {
+      console.error('Error en controller al crear estudiante:', error);
+      throw error;
+    }
   }
 
   @Get('enums')
