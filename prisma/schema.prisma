@@ -34,6 +34,7 @@ model Estudiante {
   fechaInicioCarrera                          String
   fechaMatricula                              String
   tipoMatricula                               TipoMatricula
+  duracionPeriodoAcademico                    Int
   nivelAcademico                              NivelAcademico
   haRepetidoAlMenosUnaMateria                 HaRepetidoAlMenosUnaMateria
   paralelo                                    Paralelo

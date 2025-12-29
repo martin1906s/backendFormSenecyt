@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min } from 'class-validator';
 import {
   TipoDocumento,
   Sexo,
@@ -156,6 +156,11 @@ export class CreateEstudianteDto {
   @IsEnum(TipoMatricula)
   @IsNotEmpty()
   tipoMatricula: TipoMatricula;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @Min(1)
+  duracionPeriodoAcademico: number;
 
   @IsEnum(NivelAcademico)
   @IsNotEmpty()
