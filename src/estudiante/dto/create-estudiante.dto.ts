@@ -161,10 +161,6 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   nivelAcademico: NivelAcademico;
 
-  @IsInt()
-  @IsNotEmpty()
-  duracionPeriodoAcademico: number;
-
   @IsEnum(HaRepetidoAlMenosUnaMateria)
   @IsNotEmpty()
   haRepetidoAlMenosUnaMateria: HaRepetidoAlMenosUnaMateria;
@@ -292,9 +288,5 @@ export class CreateEstudianteDto {
   @IsInt()
   @IsNotEmpty()
   cantidadMiembrosHogar: number;
-
-  @IsInt()
-  @IsNotEmpty()
-  periodoAcademicoId: number;
 }
 

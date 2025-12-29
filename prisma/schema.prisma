@@ -6,11 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model PeriodoAcademico {
-  id          Int          @id @default(autoincrement())
-  estudiantes Estudiante[]
-}
-
 model Estudiante {
   id                                          Int                                        @id @default(autoincrement())
   tipoDocumento                               TipoDocumento
@@ -40,7 +35,6 @@ model Estudiante {
   fechaMatricula                              String
   tipoMatricula                               TipoMatricula
   nivelAcademico                              NivelAcademico
-  duracionPeriodoAcademico                    Int
   haRepetidoAlMenosUnaMateria                 HaRepetidoAlMenosUnaMateria
   paralelo                                    Paralelo
   haPerdidoLaGratuidad                        HaPerdidoLaGratuidad
@@ -73,13 +67,11 @@ model Estudiante {
   nivelFormacionMadre                         NivelFormacionMadre
   ingresoTotalHogar                           String                                     @default("NA")
   cantidadMiembrosHogar                       Int
-  periodoAcademicoId                          Int
   createdAt                                   DateTime                                   @default(now())
   updatedAt                                   DateTime                                   @updatedAt
   puebloNacionalidad                          PuebloNacionalidad
   provinciaNacimientoId                       Provincia?
   provinciaResidenciaId                       Provincia
-  periodoAcademico                            PeriodoAcademico                           @relation(fields: [periodoAcademicoId], references: [id])
 
   @@unique([numeroIdentificacion, tipoDocumento])
 }

@@ -9,33 +9,13 @@ export class EstudianteService {
 
   async create(createEstudianteDto: CreateEstudianteDto) {
     try {
-      // Verificar que el período académico existe, si no existe crearlo
-      const periodoAcademico = await this.prisma.periodoAcademico.findUnique({
-        where: { id: createEstudianteDto.periodoAcademicoId },
-      });
-
-      if (!periodoAcademico) {
-        // Si no existe, crearlo (solo si el ID es válido)
-        await this.prisma.periodoAcademico.create({
-          data: { id: createEstudianteDto.periodoAcademicoId },
-        });
-      }
-
       return await this.prisma.estudiante.create({
         data: createEstudianteDto,
-        include: {
-          periodoAcademico: true,
-        },
       });
     } catch (error) {
       if (error.code === 'P2002') {
         throw new ConflictException(
           'Ya existe un estudiante con esta identificación y tipo de documento',
-        );
-      }
-      if (error.code === 'P2003') {
-        throw new NotFoundException(
-          `Error con el período académico con ID ${createEstudianteDto.periodoAcademicoId}`,
         );
       }
       if (error.code === 'ENETUNREACH' || error.code === 'ECONNREFUSED') {
@@ -49,9 +29,6 @@ export class EstudianteService {
 
   async findAll() {
     return await this.prisma.estudiante.findMany({
-      include: {
-        periodoAcademico: true,
-      },
       orderBy: {
         id: 'desc',
       },
@@ -65,9 +42,6 @@ export class EstudianteService {
           numeroIdentificacion,
           tipoDocumento: tipoDocumento as any,
         },
-      },
-      include: {
-        periodoAcademico: true,
       },
     });
 
@@ -93,9 +67,6 @@ export class EstudianteService {
       return await this.prisma.estudiante.update({
         where: { id },
         data: updateEstudianteDto,
-        include: {
-          periodoAcademico: true,
-        },
       });
     } catch (error) {
       if (error.code === 'P2002') {
