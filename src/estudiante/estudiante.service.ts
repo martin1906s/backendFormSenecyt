@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
@@ -26,13 +26,19 @@ export class EstudianteService {
           'Ya existe un estudiante con esta identificación y tipo de documento',
         );
       }
+      if (error.code === 'P1001') {
+        // Error de conexión a la base de datos
+        throw new InternalServerErrorException(
+          'Error de conexión a la base de datos. Verifica que DATABASE_URL esté configurada correctamente en Railway y que la base de datos esté accesible.',
+        );
+      }
       if (error.code === 'ENETUNREACH' || error.code === 'ECONNREFUSED') {
-        throw new Error(
+        throw new InternalServerErrorException(
           'Error de conexión a la base de datos. Verifica que DATABASE_URL esté configurada correctamente en Railway.',
         );
       }
       // Lanzar error con más información para debugging
-      throw new Error(
+      throw new InternalServerErrorException(
         `Error al crear estudiante: ${error.message || 'Error desconocido'}. Code: ${error.code || 'N/A'}. Meta: ${JSON.stringify(error.meta || {})}`,
       );
     }
