@@ -293,5 +293,13 @@ export class CreateEstudianteDto {
   @IsInt()
   @IsNotEmpty()
   cantidadMiembrosHogar: number;
+
+  @IsString()
+  @IsNotEmpty()
+  direccionDomiciliariaExacta: string;
+
+  @IsString()
+  @IsOptional()
+  imagenDireccionDomiciliaria?: string;
 }
 

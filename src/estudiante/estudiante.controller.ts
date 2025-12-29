@@ -8,7 +8,16 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 import { EstudianteService } from './estudiante.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
@@ -55,12 +64,55 @@ import {
 } from '@prisma/client';
 @Controller('estudiantes')
 export class EstudianteController {
-  constructor(private readonly estudianteService: EstudianteService) {}
+  constructor(private readonly estudianteService: EstudianteService) {
+    // Asegurar que la carpeta uploads existe
+    const uploadsDir = './uploads';
+    if (!existsSync(uploadsDir)) {
+      mkdirSync(uploadsDir, { recursive: true });
+    }
+  }
 
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  create(@Body() createEstudianteDto: CreateEstudianteDto) {
+  @UseInterceptors(
+    FileInterceptor('imagenDireccionDomiciliaria', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `direccion-${uniqueSuffix}${ext}`);
+        },
+      }),
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB
+      },
+    }),
+  )
+  @UsePipes(new ValidationPipe({ 
+    whitelist: true, 
+    forbidNonWhitelisted: true,
+    transform: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+  }))
+  create(
+    @Body() createEstudianteDto: CreateEstudianteDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif|webp)$/ }),
+        ],
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
     try {
+      if (file) {
+        createEstudianteDto.imagenDireccionDomiciliaria = `/uploads/${file.filename}`;
+      }
       return this.estudianteService.create(createEstudianteDto);
     } catch (error) {
       console.error('Error en controller al crear estudiante:', error);
