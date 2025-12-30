@@ -68,13 +68,11 @@ model Estudiante {
   nivelFormacionMadre                         NivelFormacionMadre
   ingresoTotalHogar                           String                                     @default("NA")
   cantidadMiembrosHogar                       Int
-  direccionDomiciliariaExacta                String                                     @default("NA")
-  imagenDireccionDomiciliaria                String?
   createdAt                                   DateTime                                   @default(now())
   updatedAt                                   DateTime                                   @updatedAt
   puebloNacionalidad                          PuebloNacionalidad
   provinciaNacimientoId                       Provincia?
-  provinciaResidenciaId                       Provincia
+  provinciaResidenciaId                       Provincia?
 
   @@unique([numeroIdentificacion, tipoDocumento])
 }

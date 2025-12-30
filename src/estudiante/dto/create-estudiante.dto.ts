@@ -127,8 +127,8 @@ export class CreateEstudianteDto {
   paisResidenciaId: Pais;
 
   @IsEnum(Provincia)
-  @IsNotEmpty()
-  provinciaResidenciaId: Provincia;
+  @IsOptional()
+  provinciaResidenciaId?: Provincia;
 
   @IsString()
   @IsNotEmpty()
@@ -309,12 +309,5 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   cantidadMiembrosHogar: number;
 
-  @IsString()
-  @IsNotEmpty()
-  direccionDomiciliariaExacta: string;
-
-  @IsString()
-  @IsOptional()
-  imagenDireccionDomiciliaria?: string;
 }
 

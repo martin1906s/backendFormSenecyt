@@ -8,16 +8,8 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  BadRequestException,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
 import { EstudianteService } from './estudiante.service';
-import { SupabaseStorageService } from './supabase-storage.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import {
@@ -65,18 +57,9 @@ import {
 export class EstudianteController {
   constructor(
     private readonly estudianteService: EstudianteService,
-    private readonly supabaseStorageService: SupabaseStorageService,
   ) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('imagenDireccionDomiciliaria', {
-      storage: memoryStorage(),
-      limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB
-      },
-    }),
-  )
   @UsePipes(new ValidationPipe({ 
     whitelist: true, 
     forbidNonWhitelisted: true,
@@ -85,30 +68,10 @@ export class EstudianteController {
       enableImplicitConversion: true,
     },
   }))
-  async create(
+  create(
     @Body() createEstudianteDto: CreateEstudianteDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
-        ],
-      }),
-    )
-    file?: Express.Multer.File,
   ) {
     try {
-      if (file) {
-        // Validar tipo MIME manualmente
-        const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-        if (!allowedMimeTypes.includes(file.mimetype)) {
-          throw new BadRequestException(`Tipo de archivo no permitido. Tipos permitidos: ${allowedMimeTypes.join(', ')}`);
-        }
-        
-        // Subir la imagen a Supabase Storage y obtener la URL
-        const imageUrl = await this.supabaseStorageService.uploadImage(file);
-        createEstudianteDto.imagenDireccionDomiciliaria = imageUrl;
-      }
       return this.estudianteService.create(createEstudianteDto);
     } catch (error) {
       console.error('Error en controller al crear estudiante:', error);
