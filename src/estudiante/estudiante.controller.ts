@@ -12,13 +12,12 @@ import {
   UploadedFile,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import { memoryStorage } from 'multer';
 import { EstudianteService } from './estudiante.service';
+import { SupabaseStorageService } from './supabase-storage.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import {
@@ -64,25 +63,15 @@ import {
 } from '@prisma/client';
 @Controller('estudiantes')
 export class EstudianteController {
-  constructor(private readonly estudianteService: EstudianteService) {
-    // Asegurar que la carpeta uploads existe
-    const uploadsDir = './uploads';
-    if (!existsSync(uploadsDir)) {
-      mkdirSync(uploadsDir, { recursive: true });
-    }
-  }
+  constructor(
+    private readonly estudianteService: EstudianteService,
+    private readonly supabaseStorageService: SupabaseStorageService,
+  ) {}
 
   @Post()
   @UseInterceptors(
     FileInterceptor('imagenDireccionDomiciliaria', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          cb(null, `direccion-${uniqueSuffix}${ext}`);
-        },
-      }),
+      storage: memoryStorage(),
       limits: {
         fileSize: 5 * 1024 * 1024, // 5MB
       },
@@ -96,14 +85,13 @@ export class EstudianteController {
       enableImplicitConversion: true,
     },
   }))
-  create(
+  async create(
     @Body() createEstudianteDto: CreateEstudianteDto,
     @UploadedFile(
       new ParseFilePipe({
         fileIsRequired: false,
         validators: [
           new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif|webp)$/ }),
         ],
       }),
     )
@@ -111,7 +99,15 @@ export class EstudianteController {
   ) {
     try {
       if (file) {
-        createEstudianteDto.imagenDireccionDomiciliaria = `/uploads/${file.filename}`;
+        // Validar tipo MIME manualmente
+        const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedMimeTypes.includes(file.mimetype)) {
+          throw new BadRequestException(`Tipo de archivo no permitido. Tipos permitidos: ${allowedMimeTypes.join(', ')}`);
+        }
+        
+        // Subir la imagen a Supabase Storage y obtener la URL
+        const imageUrl = await this.supabaseStorageService.uploadImage(file);
+        createEstudianteDto.imagenDireccionDomiciliaria = imageUrl;
       }
       return this.estudianteService.create(createEstudianteDto);
     } catch (error) {

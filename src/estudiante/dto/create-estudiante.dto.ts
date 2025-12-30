@@ -1,4 +1,5 @@
 import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
 import {
   TipoDocumento,
   Sexo,
@@ -157,6 +158,13 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   tipoMatricula: TipoMatricula;
 
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      const num = Number(value);
+      return isNaN(num) ? value : num;
+    }
+    return value;
+  })
   @IsNumber()
   @IsNotEmpty()
   @Min(1)
@@ -290,6 +298,13 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   ingresoTotalHogar: string;
 
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      const num = Number(value);
+      return isNaN(num) ? value : Math.floor(num);
+    }
+    return typeof value === 'number' ? Math.floor(value) : value;
+  })
   @IsInt()
   @IsNotEmpty()
   cantidadMiembrosHogar: number;
