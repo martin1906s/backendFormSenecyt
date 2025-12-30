@@ -78,7 +78,7 @@ model Estudiante {
 }
 
 enum TipoDocumento {
-  CEDULA
+  CÉDULA
   PASAPORTE
 }
 
@@ -352,7 +352,7 @@ enum EstadoCivil {
 }
 
 enum Etnia {
-  INDIGENA
+  INDÍGENA
   AFROECUATORIANO
   NEGRO
   MULATO
@@ -414,7 +414,7 @@ enum Discapacidad {
 }
 
 enum TipoDiscapacidad {
-  FISICA
+  FÍSICA
   INTELECTUAL
   AUDITIVA
   VISUAL
@@ -479,22 +479,6 @@ enum Paralelo {
   B
   C
   D
-  E
-  F
-  G
-  H
-  I
-  J
-  K
-  L
-  M
-  N
-  O
-  P
-  Q
-  R
-  S
-  T
 }
 
 enum RecibePensionDiferenciada {
