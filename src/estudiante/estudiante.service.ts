@@ -9,9 +9,24 @@ export class EstudianteService {
 
   async create(createEstudianteDto: CreateEstudianteDto) {
     try {
-      console.log('Creando estudiante con datos:', JSON.stringify(createEstudianteDto, null, 2));
+      // Asegurar que cuando el país no es Ecuador, las provincias sean undefined (null en DB) y los cantones sean 'NA'
+      const dataToCreate = { ...createEstudianteDto };
+      
+      // Para nacimiento
+      if (dataToCreate.paisNacionalidadId !== 'ECUADOR') {
+        dataToCreate.provinciaNacimientoId = undefined;
+        dataToCreate.cantonNacimientoId = 'NA';
+      }
+      
+      // Para residencia
+      if (dataToCreate.paisResidenciaId !== 'ECUADOR') {
+        dataToCreate.provinciaResidenciaId = undefined;
+        dataToCreate.cantonResidenciaId = 'NA';
+      }
+      
+      console.log('Creando estudiante con datos:', JSON.stringify(dataToCreate, null, 2));
       const result = await this.prisma.estudiante.create({
-        data: createEstudianteDto,
+        data: dataToCreate,
       });
       console.log('Estudiante creado exitosamente:', result.id);
       return result;
