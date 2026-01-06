@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Delete,
   Body,
   Param,
   Query,
@@ -157,5 +158,10 @@ export class EstudianteController {
     @Body() updateEstudianteDto: UpdateEstudianteDto,
   ) {
     return this.estudianteService.update(+id, updateEstudianteDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.estudianteService.remove(+id);
   }
 }

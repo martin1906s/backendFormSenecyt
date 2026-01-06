@@ -109,5 +109,19 @@ export class EstudianteService {
       throw error;
     }
   }
+
+  async remove(id: number) {
+    const estudiante = await this.prisma.estudiante.findUnique({
+      where: { id },
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException(`Estudiante con ID ${id} no encontrado`);
+    }
+
+    return await this.prisma.estudiante.delete({
+      where: { id },
+    });
+  }
 }
 
