@@ -11,11 +11,13 @@ async function bootstrap() {
     origin: [
       'https://forms-senecyt.vercel.app',
       'https://forms-senecyt-git-main-martin1906s.vercel.app',
+      'https://admin-forms-movilis-krake.vercel.app',
+      'https://admin-forms-movilis-krake-git-main-martin1906s.vercel.app', // Branch deployments
       'http://localhost:4200',
       'http://localhost:3000',
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
     credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204,
