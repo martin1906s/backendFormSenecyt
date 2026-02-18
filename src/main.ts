@@ -13,8 +13,9 @@ async function bootstrap() {
       'https://forms-senecyt-git-main-martin1906s.vercel.app',
       'https://admin-forms-movilis-krake.vercel.app',
       'https://admin-forms-movilis-krake-git-main-martin1906s.vercel.app', // Branch deployments
-      'http://localhost:4200',
-      'http://localhost:3000',
+      //'http://localhost:4200',
+     // 'http://localhost:3000',
+     // 'http://localhost:52505',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],

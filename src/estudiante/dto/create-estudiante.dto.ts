@@ -1,5 +1,7 @@
-import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min, IsArray, ValidateNested } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { CreateComposicionFamiliarDto } from './create-composicion-familiar.dto';
+import { CreateIngresoFamiliarDto } from './create-ingreso-familiar.dto';
 import {
   TipoDocumento,
   Sexo,
@@ -283,8 +285,56 @@ export class CreateEstudianteDto {
   correoElectronico: string;
 
   @IsString()
+  @IsOptional()
+  correoInstitucional?: string;
+
+  @IsString()
   @IsNotEmpty()
   numeroCelular: string;
+
+  @IsString()
+  @IsOptional()
+  direccionDomicilio?: string;
+
+  @IsString()
+  @IsOptional()
+  lugarResidencia?: string;
+
+  @IsString()
+  @IsOptional()
+  carrera?: string;
+
+  @IsString()
+  @IsOptional()
+  disenoCurricular?: string;
+
+  @IsString()
+  @IsOptional()
+  periodoAcademico?: string;
+
+  @IsString()
+  @IsOptional()
+  alergias?: string;
+
+  @IsString()
+  @IsOptional()
+  medicamentos?: string;
+
+  @IsString()
+  @IsOptional()
+  referenciaPersonalNombre?: string;
+
+  @IsString()
+  @IsOptional()
+  referenciaPersonalParentesco?: string;
+
+  @IsString()
+  @IsOptional()
+  referenciaPersonalTelefono?: string;
+
+  @IsString()
+  @IsOptional()
+  enfermedadCatastrofica?: string;
 
   @IsEnum(NivelFormacionPadre)
   @IsNotEmpty()
@@ -309,5 +359,176 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   cantidadMiembrosHogar: number;
 
+  @IsString()
+  @IsOptional()
+  numeroConvencional?: string;
+
+  @IsString()
+  @IsOptional()
+  presentaCarnetDiscapacidad?: string;
+
+  @IsString()
+  @IsOptional()
+  presentaAlergiaImportante?: string;
+
+  @IsString()
+  @IsOptional()
+  nombreColegioProcedencia?: string;
+
+  @IsString()
+  @IsOptional()
+  tituloBachiller?: string;
+
+  @IsString()
+  @IsOptional()
+  anioGraduacion?: string;
+
+  @IsString()
+  @IsOptional()
+  financiamientoQuienes?: string;
+
+  @IsString()
+  @IsOptional()
+  referenciaDomiciliaria?: string;
+
+  @IsString()
+  @IsOptional()
+  parroquiaResidencia?: string;
+
+  @IsString()
+  @IsOptional()
+  barrioSector?: string;
+
+  @IsString()
+  @IsOptional()
+  zonaVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  coordenadasVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  croquisViviendaUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  tipoPropiedadVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  estructuraVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  tipoVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  serviciosDisponibles?: string;
+
+  @IsOptional()
+  @IsInt()
+  cantidadBanos?: number;
+
+  @IsOptional()
+  @IsInt()
+  cantidadHabitaciones?: number;
+
+  @IsString()
+  @IsOptional()
+  comparteHabitacion?: string;
+
+  @IsString()
+  @IsOptional()
+  conQuienVive?: string;
+
+  @IsString()
+  @IsOptional()
+  tamanoViviendaSuficiente?: string;
+
+  @IsString()
+  @IsOptional()
+  dinamicaFamiliar?: string;
+
+  @IsString()
+  @IsOptional()
+  violenciaFamiliar?: string;
+
+  @IsString()
+  @IsOptional()
+  tipoViolenciaFamiliar?: string;
+
+  @IsString()
+  @IsOptional()
+  estudianteCabezaFamiliar?: string;
+
+  @IsString()
+  @IsOptional()
+  familiaDiscapacidadEnfermedadCatastrofica?: string;
+
+  @IsString()
+  @IsOptional()
+  familiaProblemaSalud?: string;
+
+  @IsString()
+  @IsOptional()
+  familiaParentesco?: string;
+
+  @IsString()
+  @IsOptional()
+  familiaServiciosMedicos?: string;
+
+  @IsString()
+  @IsOptional()
+  familiaServiciosMedicosDetalle?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoAlimentacion?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoEducacion?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoIndumentaria?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoTransporte?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoSalud?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoServiciosBasicos?: string;
+
+  @IsString()
+  @IsOptional()
+  egresoOtros?: string;
+
+  @IsString()
+  @IsOptional()
+  totalEgresos?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateComposicionFamiliarDto)
+  composicionFamiliar?: CreateComposicionFamiliarDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateIngresoFamiliarDto)
+  ingresosFamiliares?: CreateIngresoFamiliarDto[];
 }
 

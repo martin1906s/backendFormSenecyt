@@ -30,28 +30,37 @@ export class SupabaseStorageService {
   }
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
+    return this.uploadToBucket(file, this.bucketName, this.folderName);
+  }
+
+  /**
+   * Sube un archivo a un bucket específico de Supabase.
+   * @param file Archivo Multer
+   * @param bucket Nombre del bucket (ej: 'titulo' para título de bachiller)
+   * @param folder Carpeta dentro del bucket (opcional, default 'documentos')
+   */
+  async uploadToBucket(
+    file: Express.Multer.File,
+    bucket: string,
+    folder: string = 'documentos',
+  ): Promise<string> {
     try {
-      // Generar un nombre único para el archivo
       const fileExt = extname(file.originalname);
       const fileName = `${randomUUID()}${fileExt}`;
-      const filePath = `${this.folderName}/${fileName}`;
+      const filePath = `${folder}/${fileName}`;
 
-      // Obtener el buffer del archivo
       let fileBuffer: Buffer;
       if (file.buffer) {
-        // Si el archivo está en memoria (memoryStorage)
         fileBuffer = file.buffer;
       } else if (file.path) {
-        // Si el archivo está en disco (diskStorage)
         fileBuffer = readFileSync(file.path);
       } else {
         throw new Error('No se pudo obtener el contenido del archivo');
       }
 
-      // Subir el archivo a Supabase Storage
-      console.log(`Subiendo archivo a bucket: ${this.bucketName}, ruta: ${filePath}`);
-      const { data, error } = await this.supabase.storage
-        .from(this.bucketName)
+      console.log(`Subiendo archivo a bucket: ${bucket}, ruta: ${filePath}`);
+      const { error } = await this.supabase.storage
+        .from(bucket)
         .upload(filePath, fileBuffer, {
           contentType: file.mimetype,
           upsert: false,
@@ -59,48 +68,55 @@ export class SupabaseStorageService {
 
       if (error) {
         console.error('Error detallado de Supabase:', error);
-        
-        // Mensaje de error más descriptivo para problemas de autenticación
         if (error.message.includes('signature verification failed') || error.message.includes('JWT')) {
-          const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
           throw new Error(
-            `Error de autenticación con Supabase. Verifica que:\n` +
-            `1. La URL de Supabase (${supabaseUrl}) coincida con tu proyecto\n` +
-            `2. La clave SUPABASE_SERVICE_KEY sea válida y corresponda al mismo proyecto\n` +
-            `3. El bucket '${this.bucketName}' exista y tenga permisos públicos`
+            `Error de autenticación con Supabase. Verifica SUPABASE_SERVICE_KEY y que el bucket '${bucket}' exista.`,
           );
         }
-        
-        // Mensaje de error para bucket no encontrado
         if (error.message.includes('Bucket not found') || error.message.includes('bucket')) {
           throw new Error(
-            `El bucket '${this.bucketName}' no existe en tu proyecto de Supabase.\n` +
-            `Para crear el bucket:\n` +
-            `1. Ve a tu proyecto de Supabase: https://supabase.com/dashboard\n` +
-            `2. Navega a Storage en el menú lateral\n` +
-            `3. Haz clic en "New bucket"\n` +
-            `4. Nombre del bucket: ${this.bucketName}\n` +
-            `5. Marca "Public bucket" para que las imágenes sean accesibles públicamente\n` +
-            `6. Haz clic en "Create bucket"\n\n` +
-            `O puedes configurar un bucket diferente agregando SUPABASE_BUCKET_NAME en tu archivo .env`
+            `El bucket '${bucket}' no existe. Créalo en Supabase Storage (Public bucket).`,
           );
         }
-        
-        throw new Error(`Error al subir imagen a Supabase: ${error.message}`);
+        throw new Error(`Error al subir archivo: ${error.message}`);
       }
 
-      // Obtener la URL pública de la imagen
-      const { data: urlData } = this.supabase.storage
-        .from(this.bucketName)
-        .getPublicUrl(filePath);
-
+      const { data: urlData } = this.supabase.storage.from(bucket).getPublicUrl(filePath);
       if (!urlData?.publicUrl) {
-        throw new Error('No se pudo obtener la URL pública de la imagen');
+        throw new Error('No se pudo obtener la URL pública del archivo');
       }
-
       return urlData.publicUrl;
     } catch (error) {
-      console.error('Error en SupabaseStorageService:', error);
+      console.error('Error en SupabaseStorageService.uploadToBucket:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Elimina un archivo del storage a partir de su URL pública.
+   * La URL debe ser del tipo: .../storage/v1/object/public/{bucket}/{path}
+   */
+  async deleteByPublicUrl(publicUrl: string): Promise<void> {
+    try {
+      const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+      const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/`;
+      if (!publicUrl.startsWith(prefix)) {
+        throw new Error('URL no corresponde a un archivo de este almacenamiento');
+      }
+      const relative = publicUrl.slice(prefix.length);
+      const firstSlash = relative.indexOf('/');
+      if (firstSlash === -1) {
+        throw new Error('URL de archivo inválida');
+      }
+      const bucket = relative.slice(0, firstSlash);
+      const path = relative.slice(firstSlash + 1);
+      const { error } = await this.supabase.storage.from(bucket).remove([path]);
+      if (error) {
+        console.error('Error al eliminar de Supabase:', error);
+        throw new Error(`Error al eliminar archivo: ${error.message}`);
+      }
+    } catch (error) {
+      console.error('Error en SupabaseStorageService.deleteByPublicUrl:', error);
       throw error;
     }
   }

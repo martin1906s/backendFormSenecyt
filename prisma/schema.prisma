@@ -63,18 +63,111 @@ model Estudiante {
   participaEnProyectoVinculacionSociedad      ParticipaEnProyectoVinculacionSociedad
   tipoAlcanceProyectoVinculacion              TipoAlcanceProyectoVinculacion?
   correoElectronico                           String                                     @default("NA")
+  correoInstitucional                         String                                     @default("NA")
   numeroCelular                               String
+  direccionDomicilio                          String                                     @default("NA")
+  lugarResidencia                             String                                     @default("NA")
+  carrera                                     String                                     @default("NA")
+  disenoCurricular                            String                                     @default("NA")
+  periodoAcademico                            String                                     @default("NA")
+  alergias                                    String                                     @default("NA")
+  medicamentos                                String                                     @default("NA")
+  referenciaPersonalNombre                   String                                     @default("NA")
+  referenciaPersonalParentesco               String                                     @default("NA")
+  referenciaPersonalTelefono                 String                                     @default("NA")
+  enfermedadCatastrofica                     String                                     @default("NA")
   nivelFormacionPadre                         NivelFormacionPadre
   nivelFormacionMadre                         NivelFormacionMadre
   ingresoTotalHogar                           String                                     @default("NA")
   cantidadMiembrosHogar                       Int
+  // Contactos adicionales
+  numeroConvencional                          String                                     @default("NA")
+  // Discapacidad y salud
+  presentaCarnetDiscapacidad                  String                                     @default("NA")
+  presentaAlergiaImportante                  String                                     @default("NA")
+  // Colegio y bachillerato
+  nombreColegioProcedencia                    String                                     @default("NA")
+  tituloBachiller                             String                                     @default("NA")
+  anioGraduacion                              String                                     @default("NA")
+  // Financiamiento
+  financiamientoQuienes                       String                                     @default("NA")
+  // Domicilio ampliado
+  referenciaDomiciliaria                      String                                     @default("NA")
+  parroquiaResidencia                         String                                     @default("NA")
+  barrioSector                                String                                     @default("NA")
+  zonaVivienda                                String                                     @default("NA")
+  coordenadasVivienda                         String                                     @default("NA")
+  croquisViviendaUrl                          String                                     @default("NA")
+  tipoPropiedadVivienda                       String                                     @default("NA")
+  estructuraVivienda                          String                                     @default("NA")
+  tipoVivienda                                String                                     @default("NA")
+  serviciosDisponibles                        String                                     @default("NA")
+  cantidadBanos                               Int?
+  cantidadHabitaciones                        Int?
+  comparteHabitacion                          String                                     @default("NA")
+  conQuienVive                                String                                     @default("NA")
+  tamanoViviendaSuficiente                    String                                     @default("NA")
+  // Dinámica familiar
+  dinamicaFamiliar                            String                                     @default("NA")
+  violenciaFamiliar                            String                                     @default("NA")
+  tipoViolenciaFamiliar                       String                                     @default("NA")
+  estudianteCabezaFamiliar                    String                                     @default("NA")
+  // Familia - discapacidad/enfermedad catastrófica
+  familiaDiscapacidadEnfermedadCatastrofica   String                                     @default("NA")
+  familiaProblemaSalud                        String                                     @default("NA")
+  familiaParentesco                           String                                     @default("NA")
+  familiaServiciosMedicos                      String                                     @default("NA")
+  familiaServiciosMedicosDetalle              String                                     @default("NA")
+  // Egresos familiares (detalle)
+  egresoVivienda                              String                                     @default("NA")
+  egresoAlimentacion                          String                                     @default("NA")
+  egresoEducacion                             String                                     @default("NA")
+  egresoIndumentaria                          String                                     @default("NA")
+  egresoTransporte                            String                                     @default("NA")
+  egresoSalud                                 String                                     @default("NA")
+  egresoServiciosBasicos                      String                                     @default("NA")
+  egresoOtros                                 String                                     @default("NA")
+  totalEgresos                                String                                     @default("NA")
   createdAt                                   DateTime                                   @default(now())
   updatedAt                                   DateTime                                   @updatedAt
   puebloNacionalidad                          PuebloNacionalidad
   provinciaNacimientoId                       Provincia?
   provinciaResidenciaId                       Provincia?
 
+  composicionFamiliar                        ComposicionFamiliar[]
+  ingresosFamiliares                         IngresoFamiliar[]
+
   @@unique([numeroIdentificacion, tipoDocumento])
+}
+
+model ComposicionFamiliar {
+  id                Int        @id @default(autoincrement())
+  estudianteId      Int
+  estudiante        Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  nombresApellidos  String     @default("NA")
+  fechaNacimiento   String     @default("NA")
+  cedulaIdentidad   String     @default("NA")
+  estadoCivil       String     @default("NA")
+  parentesco        String     @default("NA")
+  nivelEstudios     String     @default("NA")
+  titulo            String     @default("NA")
+  laborOcupacion    String     @default("NA")
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+model IngresoFamiliar {
+  id                Int        @id @default(autoincrement())
+  estudianteId      Int
+  estudiante        Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  nombresApellidos  String     @default("NA")
+  parentesco        String     @default("NA")
+  actividadLaboral  String     @default("NA")
+  ingresoMensual    String     @default("NA")
+  ingresosExtras    String     @default("NA")
+  total             String     @default("NA")
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 enum TipoDocumento {
