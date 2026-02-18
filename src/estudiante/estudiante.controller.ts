@@ -18,6 +18,7 @@ import { EstudianteService } from './estudiante.service';
 import { SupabaseStorageService } from './supabase-storage.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
+import { EmptyStringToUndefinedPipe } from '../common/pipes/empty-string-to-undefined.pipe';
 import {
   TipoDocumento,
   Sexo,
@@ -150,7 +151,10 @@ export class EstudianteController {
   }
 
   @Post('guardar-paso')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
+  @UsePipes(
+    new EmptyStringToUndefinedPipe(),
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
+  )
   guardarPaso(@Body() updateEstudianteDto: UpdateEstudianteDto) {
     return this.estudianteService.guardarPaso(updateEstudianteDto);
   }
