@@ -3,10 +3,12 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 
 //Cors
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useGlobalFilters(new PrismaExceptionFilter());
   app.enableCors({
     origin: [
       'https://forms-senecyt.vercel.app',

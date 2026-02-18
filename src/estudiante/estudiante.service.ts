@@ -260,13 +260,8 @@ export class EstudianteService {
       include: { composicionFamiliar: true, ingresosFamiliares: true },
     });
 
-    if (!estudiante) {
-      throw new NotFoundException(
-        `Estudiante con cédula ${numeroIdentificacion} y tipo ${tipoDocumento} no encontrado`,
-      );
-    }
-
-    return estudiante;
+    // Si no existe, devolver null (200) para que el front pueda llenar el formulario desde cero
+    return estudiante ?? null;
   }
 
   async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
