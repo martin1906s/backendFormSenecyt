@@ -38,9 +38,6 @@ import {
   TipoAlcanceProyectoVinculacion,
   NivelFormacionPadre,
   NivelFormacionMadre,
-  Pais,
-  Provincia,
-  PuebloNacionalidad,
 } from '@prisma/client';
 
 export class CreateEstudianteDto {
@@ -84,9 +81,13 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   etnia: Etnia;
 
-  @IsEnum(PuebloNacionalidad)
-  @IsNotEmpty()
-  puebloNacionalidad: PuebloNacionalidad;
+  @IsString()
+  @IsOptional()
+  nacionalidadId?: string;
+
+  @IsString()
+  @IsOptional()
+  puebloId?: string;
 
   @IsEnum(TipoSangre)
   @IsNotEmpty()
@@ -112,29 +113,33 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   fechaNacimiento: string;
 
-  @IsEnum(Pais)
-  @IsNotEmpty()
-  paisNacionalidadId: Pais;
-
-  @IsEnum(Provincia)
+  @IsString()
   @IsOptional()
-  provinciaNacimientoId?: Provincia;
+  paisNacionalidadId?: string;
 
   @IsString()
-  @IsNotEmpty()
-  cantonNacimientoId: string;
-
-  @IsEnum(Pais)
-  @IsNotEmpty()
-  paisResidenciaId: Pais;
-
-  @IsEnum(Provincia)
   @IsOptional()
-  provinciaResidenciaId?: Provincia;
+  provinciaNacimientoId?: string;
 
   @IsString()
-  @IsNotEmpty()
-  cantonResidenciaId: string;
+  @IsOptional()
+  cantonNacimientoId?: string;
+
+  @IsString()
+  @IsOptional()
+  paisResidenciaId?: string;
+
+  @IsString()
+  @IsOptional()
+  provinciaResidenciaId?: string;
+
+  @IsString()
+  @IsOptional()
+  cantonResidenciaId?: string;
+
+  @IsString()
+  @IsOptional()
+  sectorEconomicoId?: string;
 
   @IsEnum(TipoColegio)
   @IsNotEmpty()

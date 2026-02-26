@@ -55,9 +55,6 @@ import {
   TipoAlcanceProyectoVinculacion,
   NivelFormacionPadre,
   NivelFormacionMadre,
-  Provincia,
-  PuebloNacionalidad,
-  Canton,
 } from '@prisma/client';
 const BUCKET_TITULO = 'titulo';
 const BUCKET_MAPS = 'maps';
@@ -150,12 +147,24 @@ export class EstudianteController {
   }
 
   @Post('guardar-paso')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   guardarPaso(@Body() updateEstudianteDto: UpdateEstudianteDto) {
     return this.estudianteService.guardarPaso(updateEstudianteDto);
   }
 
   @Get('enums')
-  getEnums() {
+  async getEnums() {
+    // Cargar catálogos desde la base de datos
+    const pueblosYNacionalidades = await this.estudianteService.getPueblosYNacionalidades();
+    const paises = await this.estudianteService.getPaises();
+    const provincias = await this.estudianteService.getProvincias();
+    const cantones = await this.estudianteService.getCantones();
+    
+    console.log('PuebloNacionalidad en enums:', pueblosYNacionalidades.length, 'registros');
+    console.log('Paises en enums:', paises.length, 'registros');
+    console.log('Provincias en enums:', provincias.length, 'registros');
+    console.log('Cantones en enums:', cantones.length, 'registros');
+    
     return {
       TipoDocumento: Object.values(TipoDocumento),
       Sexo: Object.values(Sexo),
@@ -166,10 +175,6 @@ export class EstudianteController {
       Discapacidad: Object.values(Discapacidad),
       TipoDiscapacidad: Object.values(TipoDiscapacidad),
       TipoColegio: Object.values(TipoColegio),
-      Pais: Object.values(Pais),
-      PuebloNacionalidad: Object.values(PuebloNacionalidad),
-      Provincia: Object.values(Provincia),
-      Canton: Object.values(Canton),
       ModalidadCarrera: Object.values(ModalidadCarrera),
       JornadaCarrera: Object.values(JornadaCarrera),
       TipoMatricula: Object.values(TipoMatricula),
@@ -206,6 +211,11 @@ export class EstudianteController {
       ),
       NivelFormacionPadre: Object.values(NivelFormacionPadre),
       NivelFormacionMadre: Object.values(NivelFormacionMadre),
+      // Catálogos desde la base de datos
+      PuebloNacionalidad: pueblosYNacionalidades.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo })),
+      Pais: paises.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo })),
+      Provincia: provincias.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo, paisId: p.paisId })),
+      Canton: cantones.map(c => ({ id: c.id, nombre: c.nombre, codigo: c.codigo, provinciaId: c.provinciaId })),
     };
   }
 

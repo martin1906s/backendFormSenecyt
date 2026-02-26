@@ -8,11 +8,9 @@ import {
   Genero,
   EstadoCivil,
   Etnia,
-  PuebloNacionalidad,
   TipoSangre,
   Discapacidad,
   TipoDiscapacidad,
-  Pais,
   TipoColegio,
   ModalidadCarrera,
   JornadaCarrera,
@@ -50,6 +48,54 @@ function firstEnum<T extends Record<string, string>>(e: T): T[keyof T] {
 export class EstudianteService {
   constructor(private prisma: PrismaService) {}
 
+  async getPueblosYNacionalidades() {
+    const result = await this.prisma.puebloYNacionalidad.findMany({
+      orderBy: { codigo: 'asc' },
+      select: {
+        id: true,
+        codigo: true,
+        nombre: true,
+      },
+    });
+    console.log('Pueblos y Nacionalidades desde DB:', result.length, 'registros');
+    return result;
+  }
+
+  async getPaises() {
+    return this.prisma.pais.findMany({
+      orderBy: { codigo: 'asc' },
+      select: {
+        id: true,
+        codigo: true,
+        nombre: true,
+      },
+    });
+  }
+
+  async getProvincias() {
+    return this.prisma.provincia.findMany({
+      orderBy: { codigo: 'asc' },
+      select: {
+        id: true,
+        codigo: true,
+        nombre: true,
+        paisId: true,
+      },
+    });
+  }
+
+  async getCantones() {
+    return this.prisma.canton.findMany({
+      orderBy: { codigo: 'asc' },
+      select: {
+        id: true,
+        codigo: true,
+        nombre: true,
+        provinciaId: true,
+      },
+    });
+  }
+
   /** Valores por defecto para crear un borrador cuando aún no existe el estudiante */
   private getDefaultsForCreate(tipoDocumento: TipoDocumento, numeroIdentificacion: string): Record<string, unknown> {
     return {
@@ -63,19 +109,12 @@ export class EstudianteService {
       genero: firstEnum(Genero),
       estadoCivil: firstEnum(EstadoCivil),
       etnia: firstEnum(Etnia),
-      puebloNacionalidad: firstEnum(PuebloNacionalidad),
       tipoSangre: firstEnum(TipoSangre),
       discapacidad: firstEnum(Discapacidad),
       porcentajeDiscapacidad: 'NA',
       numCarnetConadis: 'NA',
       tipoDiscapacidad: firstEnum(TipoDiscapacidad),
       fechaNacimiento: 'NA',
-      paisNacionalidadId: firstEnum(Pais),
-      provinciaNacimientoId: null,
-      cantonNacimientoId: 'NA',
-      paisResidenciaId: firstEnum(Pais),
-      provinciaResidenciaId: null,
-      cantonResidenciaId: 'NA',
       tipoColegioId: firstEnum(TipoColegio),
       modalidadCarrera: firstEnum(ModalidadCarrera),
       jornadaCarrera: firstEnum(JornadaCarrera),
@@ -162,18 +201,59 @@ export class EstudianteService {
       };
       const dataToCreate = { ...estudianteData } as any;
 
-      // Asegurar que cuando el país no es Ecuador, las provincias sean undefined (null en DB) y los cantones sean 'NA'
-      if (dataToCreate.paisNacionalidadId !== 'ECUADOR') {
-        dataToCreate.provinciaNacimientoId = undefined;
-        dataToCreate.cantonNacimientoId = 'NA';
+      // Extraer campos de relación para manejarlos por separado
+      const nacionalidadId = dataToCreate.nacionalidadId;
+      const puebloId = dataToCreate.puebloId;
+      const sectorEconomicoId = dataToCreate.sectorEconomicoId;
+      const paisNacionalidadId = dataToCreate.paisNacionalidadId;
+      const provinciaNacimientoId = dataToCreate.provinciaNacimientoId;
+      const cantonNacimientoId = dataToCreate.cantonNacimientoId;
+      const paisResidenciaId = dataToCreate.paisResidenciaId;
+      const provinciaResidenciaId = dataToCreate.provinciaResidenciaId;
+      const cantonResidenciaId = dataToCreate.cantonResidenciaId;
+
+      // Eliminar campos de relación del objeto principal
+      delete dataToCreate.nacionalidadId;
+      delete dataToCreate.puebloId;
+      delete dataToCreate.sectorEconomicoId;
+      delete dataToCreate.paisNacionalidadId;
+      delete dataToCreate.provinciaNacimientoId;
+      delete dataToCreate.cantonNacimientoId;
+      delete dataToCreate.paisResidenciaId;
+      delete dataToCreate.provinciaResidenciaId;
+      delete dataToCreate.cantonResidenciaId;
+
+      // Agregar relaciones usando sintaxis de Prisma connect
+      if (nacionalidadId && nacionalidadId !== '' && nacionalidadId !== 'NA') {
+        dataToCreate.PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad = { connect: { id: nacionalidadId } };
       }
-      if (dataToCreate.paisResidenciaId !== 'ECUADOR') {
-        dataToCreate.provinciaResidenciaId = undefined;
-        dataToCreate.cantonResidenciaId = 'NA';
+      if (puebloId && puebloId !== '' && puebloId !== 'NA') {
+        dataToCreate.PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad = { connect: { id: puebloId } };
+      }
+      if (sectorEconomicoId && sectorEconomicoId !== '' && sectorEconomicoId !== 'NA') {
+        dataToCreate.SectorEconomico = { connect: { id: sectorEconomicoId } };
+      }
+      if (paisNacionalidadId && paisNacionalidadId !== '' && paisNacionalidadId !== 'NA') {
+        dataToCreate.Pais_Estudiante_paisNacionalidadIdToPais = { connect: { id: paisNacionalidadId } };
+      }
+      if (provinciaNacimientoId && provinciaNacimientoId !== '' && provinciaNacimientoId !== 'NA') {
+        dataToCreate.Provincia_Estudiante_provinciaNacimientoIdToProvincia = { connect: { id: provinciaNacimientoId } };
+      }
+      if (cantonNacimientoId && cantonNacimientoId !== '' && cantonNacimientoId !== 'NA') {
+        dataToCreate.Canton_Estudiante_cantonNacimientoIdToCanton = { connect: { id: cantonNacimientoId } };
+      }
+      if (paisResidenciaId && paisResidenciaId !== '' && paisResidenciaId !== 'NA') {
+        dataToCreate.Pais_Estudiante_paisResidenciaIdToPais = { connect: { id: paisResidenciaId } };
+      }
+      if (provinciaResidenciaId && provinciaResidenciaId !== '' && provinciaResidenciaId !== 'NA') {
+        dataToCreate.Provincia_Estudiante_provinciaResidenciaIdToProvincia = { connect: { id: provinciaResidenciaId } };
+      }
+      if (cantonResidenciaId && cantonResidenciaId !== '' && cantonResidenciaId !== 'NA') {
+        dataToCreate.Canton_Estudiante_cantonResidenciaIdToCanton = { connect: { id: cantonResidenciaId } };
       }
 
       if (composicionFamiliar?.length) {
-        dataToCreate.composicionFamiliar = { create: composicionFamiliar.map((r) => ({
+        dataToCreate.ComposicionFamiliar = { create: composicionFamiliar.map((r) => ({
           nombresApellidos: r.nombresApellidos ?? 'NA',
           fechaNacimiento: r.fechaNacimiento ?? 'NA',
           cedulaIdentidad: r.cedulaIdentidad ?? 'NA',
@@ -185,7 +265,7 @@ export class EstudianteService {
         })) };
       }
       if (ingresosFamiliares?.length) {
-        dataToCreate.ingresosFamiliares = { create: ingresosFamiliares.map((r) => ({
+        dataToCreate.IngresoFamiliar = { create: ingresosFamiliares.map((r) => ({
           nombresApellidos: r.nombresApellidos ?? 'NA',
           parentesco: r.parentesco ?? 'NA',
           actividadLaboral: r.actividadLaboral ?? 'NA',
@@ -198,7 +278,7 @@ export class EstudianteService {
       console.log('Creando estudiante con datos:', JSON.stringify(dataToCreate, null, 2));
       const result = await this.prisma.estudiante.create({
         data: dataToCreate,
-        include: { composicionFamiliar: true, ingresosFamiliares: true },
+        include: { ComposicionFamiliar: true, IngresoFamiliar: true },
       });
       console.log('Estudiante creado exitosamente:', result.id);
       return result;
@@ -234,14 +314,26 @@ export class EstudianteService {
   async findAll() {
     return await this.prisma.estudiante.findMany({
       orderBy: { id: 'desc' },
-      include: { composicionFamiliar: true, ingresosFamiliares: true },
+      include: { ComposicionFamiliar: true, IngresoFamiliar: true },
     });
   }
 
   async findOne(id: number) {
     const estudiante = await this.prisma.estudiante.findUnique({
       where: { id },
-      include: { composicionFamiliar: true, ingresosFamiliares: true },
+      include: { 
+        ComposicionFamiliar: true, 
+        IngresoFamiliar: true,
+        PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad: true,
+        PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad: true,
+        Pais_Estudiante_paisNacionalidadIdToPais: true,
+        Pais_Estudiante_paisResidenciaIdToPais: true,
+        Provincia_Estudiante_provinciaNacimientoIdToProvincia: true,
+        Provincia_Estudiante_provinciaResidenciaIdToProvincia: true,
+        Canton_Estudiante_cantonNacimientoIdToCanton: true,
+        Canton_Estudiante_cantonResidenciaIdToCanton: true,
+        SectorEconomico: true,
+      },
     });
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con ID ${id} no encontrado`);
@@ -257,7 +349,19 @@ export class EstudianteService {
           tipoDocumento: tipoDocumento as any,
         },
       },
-      include: { composicionFamiliar: true, ingresosFamiliares: true },
+      include: { 
+        ComposicionFamiliar: true, 
+        IngresoFamiliar: true,
+        PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad: true,
+        PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad: true,
+        Pais_Estudiante_paisNacionalidadIdToPais: true,
+        Pais_Estudiante_paisResidenciaIdToPais: true,
+        Provincia_Estudiante_provinciaNacimientoIdToProvincia: true,
+        Provincia_Estudiante_provinciaResidenciaIdToProvincia: true,
+        Canton_Estudiante_cantonNacimientoIdToCanton: true,
+        Canton_Estudiante_cantonResidenciaIdToCanton: true,
+        SectorEconomico: true,
+      },
     });
 
     // Si no existe, devolver null (200) para que el front pueda llenar el formulario desde cero
@@ -281,10 +385,97 @@ export class EstudianteService {
 
       const data: any = { ...rest };
 
+      // Extraer campos de relación para manejarlos por separado
+      const nacionalidadId = data.nacionalidadId;
+      const puebloId = data.puebloId;
+      const sectorEconomicoId = data.sectorEconomicoId;
+      const paisNacionalidadId = data.paisNacionalidadId;
+      const provinciaNacimientoId = data.provinciaNacimientoId;
+      const cantonNacimientoId = data.cantonNacimientoId;
+      const paisResidenciaId = data.paisResidenciaId;
+      const provinciaResidenciaId = data.provinciaResidenciaId;
+      const cantonResidenciaId = data.cantonResidenciaId;
+
+      // Eliminar campos de relación del objeto principal
+      delete data.nacionalidadId;
+      delete data.puebloId;
+      delete data.sectorEconomicoId;
+      delete data.paisNacionalidadId;
+      delete data.provinciaNacimientoId;
+      delete data.cantonNacimientoId;
+      delete data.paisResidenciaId;
+      delete data.provinciaResidenciaId;
+      delete data.cantonResidenciaId;
+
+      // Agregar relaciones usando sintaxis de Prisma connect/disconnect
+      if (nacionalidadId !== undefined) {
+        if (nacionalidadId && nacionalidadId !== '' && nacionalidadId !== 'NA') {
+          data.PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad = { connect: { id: nacionalidadId } };
+        } else {
+          data.PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad = { disconnect: true };
+        }
+      }
+      if (puebloId !== undefined) {
+        if (puebloId && puebloId !== '' && puebloId !== 'NA') {
+          data.PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad = { connect: { id: puebloId } };
+        } else {
+          data.PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad = { disconnect: true };
+        }
+      }
+      if (sectorEconomicoId !== undefined) {
+        if (sectorEconomicoId && sectorEconomicoId !== '' && sectorEconomicoId !== 'NA') {
+          data.SectorEconomico = { connect: { id: sectorEconomicoId } };
+        } else {
+          data.SectorEconomico = { disconnect: true };
+        }
+      }
+      if (paisNacionalidadId !== undefined) {
+        if (paisNacionalidadId && paisNacionalidadId !== '' && paisNacionalidadId !== 'NA') {
+          data.Pais_Estudiante_paisNacionalidadIdToPais = { connect: { id: paisNacionalidadId } };
+        } else {
+          data.Pais_Estudiante_paisNacionalidadIdToPais = { disconnect: true };
+        }
+      }
+      if (provinciaNacimientoId !== undefined) {
+        if (provinciaNacimientoId && provinciaNacimientoId !== '' && provinciaNacimientoId !== 'NA') {
+          data.Provincia_Estudiante_provinciaNacimientoIdToProvincia = { connect: { id: provinciaNacimientoId } };
+        } else {
+          data.Provincia_Estudiante_provinciaNacimientoIdToProvincia = { disconnect: true };
+        }
+      }
+      if (cantonNacimientoId !== undefined) {
+        if (cantonNacimientoId && cantonNacimientoId !== '' && cantonNacimientoId !== 'NA') {
+          data.Canton_Estudiante_cantonNacimientoIdToCanton = { connect: { id: cantonNacimientoId } };
+        } else {
+          data.Canton_Estudiante_cantonNacimientoIdToCanton = { disconnect: true };
+        }
+      }
+      if (paisResidenciaId !== undefined) {
+        if (paisResidenciaId && paisResidenciaId !== '' && paisResidenciaId !== 'NA') {
+          data.Pais_Estudiante_paisResidenciaIdToPais = { connect: { id: paisResidenciaId } };
+        } else {
+          data.Pais_Estudiante_paisResidenciaIdToPais = { disconnect: true };
+        }
+      }
+      if (provinciaResidenciaId !== undefined) {
+        if (provinciaResidenciaId && provinciaResidenciaId !== '' && provinciaResidenciaId !== 'NA') {
+          data.Provincia_Estudiante_provinciaResidenciaIdToProvincia = { connect: { id: provinciaResidenciaId } };
+        } else {
+          data.Provincia_Estudiante_provinciaResidenciaIdToProvincia = { disconnect: true };
+        }
+      }
+      if (cantonResidenciaId !== undefined) {
+        if (cantonResidenciaId && cantonResidenciaId !== '' && cantonResidenciaId !== 'NA') {
+          data.Canton_Estudiante_cantonResidenciaIdToCanton = { connect: { id: cantonResidenciaId } };
+        } else {
+          data.Canton_Estudiante_cantonResidenciaIdToCanton = { disconnect: true };
+        }
+      }
+
       if (Array.isArray(composicionFamiliar)) {
         await this.prisma.composicionFamiliar.deleteMany({ where: { estudianteId: id } });
         if (composicionFamiliar.length > 0) {
-          data.composicionFamiliar = {
+          data.ComposicionFamiliar = {
             create: composicionFamiliar.map((r) => ({
               nombresApellidos: r.nombresApellidos ?? 'NA',
               fechaNacimiento: r.fechaNacimiento ?? 'NA',
@@ -301,7 +492,7 @@ export class EstudianteService {
       if (Array.isArray(ingresosFamiliares)) {
         await this.prisma.ingresoFamiliar.deleteMany({ where: { estudianteId: id } });
         if (ingresosFamiliares.length > 0) {
-          data.ingresosFamiliares = {
+          data.IngresoFamiliar = {
             create: ingresosFamiliares.map((r) => ({
               nombresApellidos: r.nombresApellidos ?? 'NA',
               parentesco: r.parentesco ?? 'NA',
@@ -317,7 +508,7 @@ export class EstudianteService {
       return await this.prisma.estudiante.update({
         where: { id },
         data,
-        include: { composicionFamiliar: true, ingresosFamiliares: true },
+        include: { ComposicionFamiliar: true, IngresoFamiliar: true },
       });
     } catch (error) {
       if (error.code === 'P2002') {

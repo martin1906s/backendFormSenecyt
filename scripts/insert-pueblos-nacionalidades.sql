@@ -1,0 +1,53 @@
+-- Insertar Nacionalidades (códigos 1-999)
+INSERT INTO "PuebloYNacionalidad" (id, codigo, nombre) VALUES
+  (gen_random_uuid(), 1, 'ECUATORIANA'),
+  (gen_random_uuid(), 2, 'COLOMBIANA'),
+  (gen_random_uuid(), 3, 'PERUANA'),
+  (gen_random_uuid(), 4, 'VENEZOLANA'),
+  (gen_random_uuid(), 5, 'ARGENTINA'),
+  (gen_random_uuid(), 6, 'CHILENA'),
+  (gen_random_uuid(), 7, 'BRASILEÑA'),
+  (gen_random_uuid(), 8, 'MEXICANA'),
+  (gen_random_uuid(), 9, 'ESTADOUNIDENSE'),
+  (gen_random_uuid(), 10, 'ESPAÑOLA'),
+  (gen_random_uuid(), 11, 'ITALIANA'),
+  (gen_random_uuid(), 12, 'FRANCESA'),
+  (gen_random_uuid(), 13, 'ALEMANA'),
+  (gen_random_uuid(), 14, 'CHINA'),
+  (gen_random_uuid(), 15, 'JAPONESA'),
+  (gen_random_uuid(), 16, 'COREANA'),
+  (gen_random_uuid(), 17, 'INDIA'),
+  (gen_random_uuid(), 18, 'CUBANA'),
+  (gen_random_uuid(), 19, 'DOMINICANA'),
+  (gen_random_uuid(), 20, 'HAITIANA'),
+  (gen_random_uuid(), 999, 'OTRA')
+ON CONFLICT (codigo) DO NOTHING;
+
+-- Insertar Pueblos Indígenas del Ecuador (códigos 1000+)
+INSERT INTO "PuebloYNacionalidad" (id, codigo, nombre) VALUES
+  (gen_random_uuid(), 1000, 'NO_APLICA'),
+  (gen_random_uuid(), 1001, 'KICHWA'),
+  (gen_random_uuid(), 1002, 'SHUAR'),
+  (gen_random_uuid(), 1003, 'ACHUAR'),
+  (gen_random_uuid(), 1004, 'ANDOA'),
+  (gen_random_uuid(), 1005, 'AWÁ'),
+  (gen_random_uuid(), 1006, 'CHACHI'),
+  (gen_random_uuid(), 1007, 'COFÁN'),
+  (gen_random_uuid(), 1008, 'ÉPERA'),
+  (gen_random_uuid(), 1009, 'HUAORANI'),
+  (gen_random_uuid(), 1010, 'KICHWA AMAZÓNICO'),
+  (gen_random_uuid(), 1011, 'KICHWA DE LA SIERRA'),
+  (gen_random_uuid(), 1012, 'MANTA'),
+  (gen_random_uuid(), 1013, 'PALTA'),
+  (gen_random_uuid(), 1014, 'PURUHÁ'),
+  (gen_random_uuid(), 1015, 'SALASACA'),
+  (gen_random_uuid(), 1016, 'SARAGURO'),
+  (gen_random_uuid(), 1017, 'SECOYA'),
+  (gen_random_uuid(), 1018, 'SHIWIAR'),
+  (gen_random_uuid(), 1019, 'SIONA'),
+  (gen_random_uuid(), 1020, 'TSÁCHILA'),
+  (gen_random_uuid(), 1021, 'WAORANI'),
+  (gen_random_uuid(), 1022, 'ZÁPARA'),
+  (gen_random_uuid(), 1023, 'AFROECUATORIANO'),
+  (gen_random_uuid(), 1024, 'MONTUBIO')
+ON CONFLICT (codigo) DO NOTHING;

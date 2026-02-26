@@ -6,434 +6,260 @@ datasource db {
   provider = "postgresql"
 }
 
-model Estudiante {
-  id                                          Int                                        @id @default(autoincrement())
-  tipoDocumento                               TipoDocumento
-  numeroIdentificacion                        String
-  primerApellido                              String
-  segundoApellido                             String                                     @default("NA")
-  primerNombre                                String
-  segundoNombre                               String                                     @default("NA")
-  sexo                                        Sexo
-  genero                                      Genero
-  estadoCivil                                 EstadoCivil
-  etnia                                       Etnia
-  tipoSangre                                  TipoSangre
-  discapacidad                                Discapacidad
-  porcentajeDiscapacidad                      String                                     @default("NA")
-  numCarnetConadis                            String                                     @default("NA")
-  tipoDiscapacidad                            TipoDiscapacidad
-  fechaNacimiento                             String
-  paisNacionalidadId                          Pais
-  cantonNacimientoId                          String
-  paisResidenciaId                            Pais
-  cantonResidenciaId                          String                                     @default("NA")
-  tipoColegioId                               TipoColegio
-  modalidadCarrera                            ModalidadCarrera
-  jornadaCarrera                              JornadaCarrera
-  fechaInicioCarrera                          String
-  fechaMatricula                              String
-  tipoMatricula                               TipoMatricula
-  duracionPeriodoAcademico                    Int
-  nivelAcademico                              NivelAcademico
-  haRepetidoAlMenosUnaMateria                 HaRepetidoAlMenosUnaMateria
-  paralelo                                    Paralelo
-  haPerdidoLaGratuidad                        HaPerdidoLaGratuidad
-  recibePensionDiferenciada                   RecibePensionDiferenciada
-  estudianteOcupacion                         EstudianteOcupacion
-  ingresosEstudiante                          IngresosEstudiante
-  bonoDesarrollo                              BonoDesarrollo
-  haRealizadoPracticasPreprofesionales        HaRealizadoPracticasPreprofesionales
-  nroHorasPracticasPreprofesionalesPorPeriodo String                                     @default("NA")
-  entornoInstitucionalPracticasProfesionales  EntornoInstitucionalPracticasProfesionales
-  sectorEconomicoPracticaProfesional          SectorEconomicoPracticaProfesional
-  tipoBeca                                    TipoBeca
-  primeraRazonBeca                            PrimeraRazonBeca
-  segundaRazonBeca                            SegundaRazonBeca
-  terceraRazonBeca                            TerceraRazonBeca
-  cuartaRazonBeca                             CuartaRazonBeca
-  quintaRazonBeca                             QuintaRazonBeca
-  sextaRazonBeca                              SextaRazonBeca
-  montoBeca                                   String                                     @default("NA")
-  porcentajeBecaCoberturaArancel              String                                     @default("NA")
-  porcentajeBecaCoberturaManutencion          String                                     @default("NA")
-  financiamientoBeca                          FinanciamientoBeca?
-  montoAyudaEconomica                         String                                     @default("NA")
-  montoCreditoEducativo                       String                                     @default("NA")
-  participaEnProyectoVinculacionSociedad      ParticipaEnProyectoVinculacionSociedad
-  tipoAlcanceProyectoVinculacion              TipoAlcanceProyectoVinculacion?
-  correoElectronico                           String                                     @default("NA")
-  correoInstitucional                         String                                     @default("NA")
-  numeroCelular                               String
-  direccionDomicilio                          String                                     @default("NA")
-  lugarResidencia                             String                                     @default("NA")
-  carrera                                     String                                     @default("NA")
-  disenoCurricular                            String                                     @default("NA")
-  periodoAcademico                            String                                     @default("NA")
-  alergias                                    String                                     @default("NA")
-  medicamentos                                String                                     @default("NA")
-  referenciaPersonalNombre                   String                                     @default("NA")
-  referenciaPersonalParentesco               String                                     @default("NA")
-  referenciaPersonalTelefono                 String                                     @default("NA")
-  enfermedadCatastrofica                     String                                     @default("NA")
-  nivelFormacionPadre                         NivelFormacionPadre
-  nivelFormacionMadre                         NivelFormacionMadre
-  ingresoTotalHogar                           String                                     @default("NA")
-  cantidadMiembrosHogar                       Int
-  // Contactos adicionales
-  numeroConvencional                          String                                     @default("NA")
-  // Discapacidad y salud
-  presentaCarnetDiscapacidad                  String                                     @default("NA")
-  presentaAlergiaImportante                  String                                     @default("NA")
-  // Colegio y bachillerato
-  nombreColegioProcedencia                    String                                     @default("NA")
-  tituloBachiller                             String                                     @default("NA")
-  anioGraduacion                              String                                     @default("NA")
-  // Financiamiento
-  financiamientoQuienes                       String                                     @default("NA")
-  // Domicilio ampliado
-  referenciaDomiciliaria                      String                                     @default("NA")
-  parroquiaResidencia                         String                                     @default("NA")
-  barrioSector                                String                                     @default("NA")
-  zonaVivienda                                String                                     @default("NA")
-  coordenadasVivienda                         String                                     @default("NA")
-  croquisViviendaUrl                          String                                     @default("NA")
-  tipoPropiedadVivienda                       String                                     @default("NA")
-  estructuraVivienda                          String                                     @default("NA")
-  tipoVivienda                                String                                     @default("NA")
-  serviciosDisponibles                        String                                     @default("NA")
-  cantidadBanos                               Int?
-  cantidadHabitaciones                        Int?
-  comparteHabitacion                          String                                     @default("NA")
-  conQuienVive                                String                                     @default("NA")
-  tamanoViviendaSuficiente                    String                                     @default("NA")
-  // Dinámica familiar
-  dinamicaFamiliar                            String                                     @default("NA")
-  violenciaFamiliar                            String                                     @default("NA")
-  tipoViolenciaFamiliar                       String                                     @default("NA")
-  estudianteCabezaFamiliar                    String                                     @default("NA")
-  // Familia - discapacidad/enfermedad catastrófica
-  familiaDiscapacidadEnfermedadCatastrofica   String                                     @default("NA")
-  familiaProblemaSalud                        String                                     @default("NA")
-  familiaParentesco                           String                                     @default("NA")
-  familiaServiciosMedicos                      String                                     @default("NA")
-  familiaServiciosMedicosDetalle              String                                     @default("NA")
-  // Egresos familiares (detalle)
-  egresoVivienda                              String                                     @default("NA")
-  egresoAlimentacion                          String                                     @default("NA")
-  egresoEducacion                             String                                     @default("NA")
-  egresoIndumentaria                          String                                     @default("NA")
-  egresoTransporte                            String                                     @default("NA")
-  egresoSalud                                 String                                     @default("NA")
-  egresoServiciosBasicos                      String                                     @default("NA")
-  egresoOtros                                 String                                     @default("NA")
-  totalEgresos                                String                                     @default("NA")
-  createdAt                                   DateTime                                   @default(now())
-  updatedAt                                   DateTime                                   @updatedAt
-  puebloNacionalidad                          PuebloNacionalidad
-  provinciaNacimientoId                       Provincia?
-  provinciaResidenciaId                       Provincia?
+model Canton {
+  id                                               String       @id
+  nombre                                           String
+  provinciaId                                      String
+  codigo                                           Int          @unique
+  Provincia                                        Provincia    @relation(fields: [provinciaId], references: [id])
+  Estudiante_Estudiante_cantonNacimientoIdToCanton Estudiante[] @relation("Estudiante_cantonNacimientoIdToCanton")
+  Estudiante_Estudiante_cantonResidenciaIdToCanton Estudiante[] @relation("Estudiante_cantonResidenciaIdToCanton")
+  Colegio                                          Colegio[]
 
-  composicionFamiliar                        ComposicionFamiliar[]
-  ingresosFamiliares                         IngresoFamiliar[]
+  @@unique([nombre, provinciaId])
+}
+
+model Colegio {
+  id              String      @id @default(uuid())
+  nombre          String
+  sostenimiento   TipoColegio
+  provinciaId     String
+  cantonId        String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  Provincia       Provincia   @relation(fields: [provinciaId], references: [id])
+  Canton          Canton      @relation(fields: [cantonId], references: [id])
+
+  @@unique([nombre, cantonId])
+  @@index([provinciaId])
+  @@index([cantonId])
+}
+
+model ComposicionFamiliar {
+  id               Int        @id @default(autoincrement())
+  estudianteId     Int
+  nombresApellidos String     @default("NA")
+  fechaNacimiento  String     @default("NA")
+  cedulaIdentidad  String     @default("NA")
+  estadoCivil      String     @default("NA")
+  parentesco       String     @default("NA")
+  nivelEstudios    String     @default("NA")
+  titulo           String     @default("NA")
+  laborOcupacion   String     @default("NA")
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  Estudiante       Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+}
+
+model Estudiante {
+  id                                                                 Int                                        @id @default(autoincrement())
+  tipoDocumento                                                      TipoDocumento
+  numeroIdentificacion                                               String
+  primerApellido                                                     String
+  segundoApellido                                                    String                                     @default("NA")
+  primerNombre                                                       String
+  segundoNombre                                                      String                                     @default("NA")
+  sexo                                                               Sexo
+  genero                                                             Genero
+  estadoCivil                                                        EstadoCivil
+  etnia                                                              Etnia
+  tipoSangre                                                         TipoSangre
+  discapacidad                                                       Discapacidad
+  porcentajeDiscapacidad                                             String                                     @default("NA")
+  numCarnetConadis                                                   String                                     @default("NA")
+  tipoDiscapacidad                                                   TipoDiscapacidad
+  fechaNacimiento                                                    String
+  tipoColegioId                                                      TipoColegio
+  modalidadCarrera                                                   ModalidadCarrera
+  jornadaCarrera                                                     JornadaCarrera
+  fechaInicioCarrera                                                 String
+  fechaMatricula                                                     String
+  tipoMatricula                                                      TipoMatricula
+  duracionPeriodoAcademico                                           Int
+  nivelAcademico                                                     NivelAcademico
+  haRepetidoAlMenosUnaMateria                                        HaRepetidoAlMenosUnaMateria
+  paralelo                                                           Paralelo
+  haPerdidoLaGratuidad                                               HaPerdidoLaGratuidad
+  recibePensionDiferenciada                                          RecibePensionDiferenciada
+  estudianteOcupacion                                                EstudianteOcupacion
+  ingresosEstudiante                                                 IngresosEstudiante
+  bonoDesarrollo                                                     BonoDesarrollo
+  haRealizadoPracticasPreprofesionales                               HaRealizadoPracticasPreprofesionales
+  nroHorasPracticasPreprofesionalesPorPeriodo                        String                                     @default("NA")
+  entornoInstitucionalPracticasProfesionales                         EntornoInstitucionalPracticasProfesionales
+  sectorEconomicoPracticaProfesional                                 SectorEconomicoPracticaProfesional         @default(NO_APLICA)
+  tipoBeca                                                           TipoBeca
+  primeraRazonBeca                                                   PrimeraRazonBeca
+  segundaRazonBeca                                                   SegundaRazonBeca
+  terceraRazonBeca                                                   TerceraRazonBeca
+  cuartaRazonBeca                                                    CuartaRazonBeca
+  quintaRazonBeca                                                    QuintaRazonBeca
+  sextaRazonBeca                                                     SextaRazonBeca
+  montoBeca                                                          String                                     @default("NA")
+  porcentajeBecaCoberturaArancel                                     String                                     @default("NA")
+  porcentajeBecaCoberturaManutencion                                 String                                     @default("NA")
+  financiamientoBeca                                                 FinanciamientoBeca?
+  montoAyudaEconomica                                                String                                     @default("NA")
+  montoCreditoEducativo                                              String                                     @default("NA")
+  participaEnProyectoVinculacionSociedad                             ParticipaEnProyectoVinculacionSociedad
+  tipoAlcanceProyectoVinculacion                                     TipoAlcanceProyectoVinculacion?
+  correoElectronico                                                  String                                     @default("NA")
+  numeroCelular                                                      String
+  nivelFormacionPadre                                                NivelFormacionPadre
+  nivelFormacionMadre                                                NivelFormacionMadre
+  ingresoTotalHogar                                                  String                                     @default("NA")
+  cantidadMiembrosHogar                                              Int
+  createdAt                                                          DateTime                                   @default(now())
+  updatedAt                                                          DateTime                                   @updatedAt
+  alergias                                                           String                                     @default("NA")
+  carrera                                                            String                                     @default("NA")
+  correoInstitucional                                                String                                     @default("NA")
+  direccionDomicilio                                                 String                                     @default("NA")
+  disenoCurricular                                                   String                                     @default("NA")
+  enfermedadCatastrofica                                             String                                     @default("NA")
+  lugarResidencia                                                    String                                     @default("NA")
+  medicamentos                                                       String                                     @default("NA")
+  periodoAcademico                                                   String                                     @default("NA")
+  referenciaPersonalNombre                                           String                                     @default("NA")
+  referenciaPersonalParentesco                                       String                                     @default("NA")
+  referenciaPersonalTelefono                                         String                                     @default("NA")
+  anioGraduacion                                                     String                                     @default("NA")
+  barrioSector                                                       String                                     @default("NA")
+  cantidadBanos                                                      Int?
+  cantidadHabitaciones                                               Int?
+  comparteHabitacion                                                 String                                     @default("NA")
+  conQuienVive                                                       String                                     @default("NA")
+  coordenadasVivienda                                                String                                     @default("NA")
+  croquisViviendaUrl                                                 String                                     @default("NA")
+  dinamicaFamiliar                                                   String                                     @default("NA")
+  egresoAlimentacion                                                 String                                     @default("NA")
+  egresoEducacion                                                    String                                     @default("NA")
+  egresoIndumentaria                                                 String                                     @default("NA")
+  egresoOtros                                                        String                                     @default("NA")
+  egresoSalud                                                        String                                     @default("NA")
+  egresoServiciosBasicos                                             String                                     @default("NA")
+  egresoTransporte                                                   String                                     @default("NA")
+  egresoVivienda                                                     String                                     @default("NA")
+  estructuraVivienda                                                 String                                     @default("NA")
+  estudianteCabezaFamiliar                                           String                                     @default("NA")
+  familiaDiscapacidadEnfermedadCatastrofica                          String                                     @default("NA")
+  familiaParentesco                                                  String                                     @default("NA")
+  familiaProblemaSalud                                               String                                     @default("NA")
+  familiaServiciosMedicos                                            String                                     @default("NA")
+  familiaServiciosMedicosDetalle                                     String                                     @default("NA")
+  financiamientoQuienes                                              String                                     @default("NA")
+  nombreColegioProcedencia                                           String                                     @default("NA")
+  numeroConvencional                                                 String                                     @default("NA")
+  parroquiaResidencia                                                String                                     @default("NA")
+  presentaAlergiaImportante                                          String                                     @default("NA")
+  presentaCarnetDiscapacidad                                         String                                     @default("NA")
+  referenciaDomiciliaria                                             String                                     @default("NA")
+  serviciosDisponibles                                               String                                     @default("NA")
+  tamanoViviendaSuficiente                                           String                                     @default("NA")
+  tipoPropiedadVivienda                                              String                                     @default("NA")
+  tipoViolenciaFamiliar                                              String                                     @default("NA")
+  tipoVivienda                                                       String                                     @default("NA")
+  tituloBachiller                                                    String                                     @default("NA")
+  totalEgresos                                                       String                                     @default("NA")
+  violenciaFamiliar                                                  String                                     @default("NA")
+  zonaVivienda                                                       String                                     @default("NA")
+  nacionalidadId                                                     String?
+  puebloId                                                           String?
+  sectorEconomicoId                                                  String?
+  paisNacionalidadId                                                 String?
+  cantonNacimientoId                                                 String?
+  paisResidenciaId                                                   String?
+  cantonResidenciaId                                                 String?
+  provinciaNacimientoId                                              String?
+  provinciaResidenciaId                                              String?
+  ComposicionFamiliar                                                ComposicionFamiliar[]
+  Canton_Estudiante_cantonNacimientoIdToCanton                       Canton?                                    @relation("Estudiante_cantonNacimientoIdToCanton", fields: [cantonNacimientoId], references: [id])
+  Canton_Estudiante_cantonResidenciaIdToCanton                       Canton?                                    @relation("Estudiante_cantonResidenciaIdToCanton", fields: [cantonResidenciaId], references: [id])
+  PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad PuebloYNacionalidad?                       @relation("Estudiante_nacionalidadIdToPuebloYNacionalidad", fields: [nacionalidadId], references: [id])
+  Pais_Estudiante_paisNacionalidadIdToPais                           Pais?                                      @relation("Estudiante_paisNacionalidadIdToPais", fields: [paisNacionalidadId], references: [id])
+  Pais_Estudiante_paisResidenciaIdToPais                             Pais?                                      @relation("Estudiante_paisResidenciaIdToPais", fields: [paisResidenciaId], references: [id])
+  Provincia_Estudiante_provinciaNacimientoIdToProvincia              Provincia?                                 @relation("Estudiante_provinciaNacimientoIdToProvincia", fields: [provinciaNacimientoId], references: [id])
+  Provincia_Estudiante_provinciaResidenciaIdToProvincia              Provincia?                                 @relation("Estudiante_provinciaResidenciaIdToProvincia", fields: [provinciaResidenciaId], references: [id])
+  PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad       PuebloYNacionalidad?                       @relation("Estudiante_puebloIdToPuebloYNacionalidad", fields: [puebloId], references: [id])
+  SectorEconomico                                                    SectorEconomico?                           @relation(fields: [sectorEconomicoId], references: [id])
+  IngresoFamiliar                                                    IngresoFamiliar[]
 
   @@unique([numeroIdentificacion, tipoDocumento])
 }
 
-model ComposicionFamiliar {
-  id                Int        @id @default(autoincrement())
-  estudianteId      Int
-  estudiante        Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  nombresApellidos  String     @default("NA")
-  fechaNacimiento   String     @default("NA")
-  cedulaIdentidad   String     @default("NA")
-  estadoCivil       String     @default("NA")
-  parentesco        String     @default("NA")
-  nivelEstudios     String     @default("NA")
-  titulo            String     @default("NA")
-  laborOcupacion    String     @default("NA")
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-}
-
 model IngresoFamiliar {
-  id                Int        @id @default(autoincrement())
-  estudianteId      Int
-  estudiante        Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  nombresApellidos  String     @default("NA")
-  parentesco        String     @default("NA")
-  actividadLaboral  String     @default("NA")
-  ingresoMensual    String     @default("NA")
-  ingresosExtras    String     @default("NA")
-  total             String     @default("NA")
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  id               Int        @id @default(autoincrement())
+  estudianteId     Int
+  nombresApellidos String     @default("NA")
+  parentesco       String     @default("NA")
+  actividadLaboral String     @default("NA")
+  ingresoMensual   String     @default("NA")
+  ingresosExtras   String     @default("NA")
+  total            String     @default("NA")
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  Estudiante       Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
 }
 
-enum TipoDocumento {
-  CÉDULA
-  PASAPORTE
+model Pais {
+  id                                             String       @id
+  nombre                                         String       @unique
+  codigo                                         Int          @unique
+  Estudiante_Estudiante_paisNacionalidadIdToPais Estudiante[] @relation("Estudiante_paisNacionalidadIdToPais")
+  Estudiante_Estudiante_paisResidenciaIdToPais   Estudiante[] @relation("Estudiante_paisResidenciaIdToPais")
+  Provincia                                      Provincia[]
 }
 
-enum Canton {
-  OÑA
-  SANTA_ISABEL
-  NABON
-  GIRON
-  SAN_FERNANDO
-  PUCARA
-  SIGSIG
-  CAMILO_PONCE_ENRIQUEZ
-  CHORDELEG
-  GUALACEO
-  CUENCA
-  SEVILLA_DE_ORO
-  EL_PAN
-  GUACHAPALA
-  PAUTE
-  CHILLANES
-  SAN_MIGUEL
-  CHIMBO
-  CALUMA
-  GUARANDA
-  ECHEANDIA
-  LAS_NAVES
-  DELEG
-  AZOGUES
-  BIBLIAN
-  CAÑAR
-  EL_TAMBO
-  SUSCAL
-  LA_TRONCAL
-  BOLIVAR
-  MIRA
-  MONTUFAR
-  SAN_PEDRO_DE_HUACA
-  ESPEJO
-  TULCAN
-  PANGUA
-  SALCEDO
-  PUJILI
-  LATACUNGA
-  SAQUISILI
-  LA_MANA
-  SIGCHOS
-  CHUNCHI
-  CUMANDA
-  ALAUSI
-  PALLATANGA
-  GUAMOTE
-  CHAMBO
-  COLTA
-  RIOBAMBA
-  GUANO
-  PENIPE
-  MARCABELI
-  BALSAS
-  LAS_LAJAS
-  PORTOVELO
-  ZARUMA
-  PIÑAS
-  ATAHUALPA
-  HUAQUILLAS
-  ARENILLAS
-  SANTA_ROSA
-  CHILLA
-  PASAJE
-  MACHALA
-  EL_GUABO
-  QUININDE
-  MUISNE
-  ATACAMES
-  ESMERALDAS
-  RIOVERDE
-  ELOY_ALFARO
-  SAN_LORENZO
-  GUAYAQUIL
-  ALFREDO_BAQUERIZO_MORENO_JUJAN
-  BALAO
-  BALZAR
-  COLIMES
-  DAULE
-  DURAN
-  EL_EMPALME
-  EL_TRIUNFO
-  MILAGRO
-  NARANJAL
-  NARANJITO
-  PALESTINA
-  PEDRO_CARBO
-  SAMBORONDON
-  SANTA_LUCIA
-  URBINA_JADO
-  YAGUACHI
-  PLAYAS
-  SIMON_BOLIVAR
-  CORONEL_MARCELINO_MARIDUEÑA
-  LOMAS_DE_SARGENTILLO
-  NOBOL
-  GENERAL_ANTONIO_ELIZALDE
-  ISIDRO_AYORA
-  OTAVALO
-  COTACACHI
-  ANTONIO_ANTE
-  PIMAMPIRO
-  SAN_MIGUEL_DE_URCUQUI
-  IBARRA
-  ESPINDOLA
-  QUILANGA
-  ZAPOTILLO
-  MACARA
-  GONZANAMA
-  CALVAS
-  SOZORANGA
-  PINDAL
-  CELICA
-  PALTAS
-  OLMEDO
-  CATAMAYO
-  PUYANGO
-  LOJA
-  CHAGUARPAMBA
-  SARAGURO
-  BABAHOYO
-  BABA
-  MONTALVO
-  PUEBLOVIEJO
-  QUEVEDO
-  URDANETA
-  VENTANAS
-  VINCES
-  PALENQUE
-  BUENA_FE
-  VALENCIA
-  MOCACHE
-  QUINSALOMA
-  PUERTO_LOPEZ
-  PAJAN
-  CANTÓN_24_DE_MAYO
-  JIPIJAPA
-  SANTA_ANA
-  MONTECRISTI
-  MANTA
-  JARAMIJO
-  PORTOVIEJO
-  JUNIN
-  ROCAFUERTE
-  C_BOLIVAR
-  PICHINCHA
-  TOSAGUA
-  SUCRE
-  CHONE
-  SAN_VICENTE
-  EL_CARMEN
-  FLAVIO_ALFARO
-  JAMA
-  PEDERNALES
-  GUALAQUIZA
-  SAN_JUAN_BOSCO
-  LIMON_INDANZA
-  TIWINTZA
-  LOGROÑO
-  SANTIAGO
-  SUCUA
-  MORONA
-  TAISHA
-  HUAMBOYA
-  PALORA
-  PABLO_SEXTO
-  CARLOS_JULIO_AROSEMENA_TOLA
-  TENA
-  ARCHIDONA
-  QUIJOS
-  EL_CHACO
-  PASTAZA
-  MERA
-  SANTA_CLARA
-  ARAJUNO
-  MEJIA
-  RUMIÑAHUI
-  DISTRITO_METROPOLITANO_DE_QUITO
-  CAYAMBE
-  SAN_MIGUEL_DE_LOS_BANCOS
-  PEDRO_MONCAYO
-  PEDRO_VICENTE_MALDONADO
-  PUERTO_QUITO
-  MOCHA
-  QUERO
-  BAÑOS_DE_AGUA_SANTA
-  CEVALLOS
-  TISALEO
-  PATATE
-  PELILEO
-  AMBATO
-  PILLARO
-  CHINCHIPE
-  PALANDA
-  ZAMORA
-  NANGARITZA
-  PAQUISHA
-  CENTINELA_DEL_CONDOR
-  YANTZAZA
-  EL_PANGUI
-  YACUAMBI
-  SAN_CRISTOBAL
-  SANTA_CRUZ
-  ISABELA
-  CUYABENO
-  SHUSHUFINDI
-  GONZALO_PIZARRO
-  LAGO_AGRIO
-  PUTUMAYO
-  CASCALES
-  SUCUMBIOS
-  AGUARICO
-  LORETO
-  ORELLANA
-  LA_JOYA_DE_LOS_SACHAS
-  SANTO_DOMINGO
-  LA_CONCORDIA
-  LA_LIBERTAD
-  SALINAS
-  SANTA_ELENA
-  ABDON_CALDERON
-  EL_PIEDRERO
-  JUVAL
-  SANTA_ROSA_DE_AGUA_CLARA
-  MATILDE_ESTHER
-  LAS_GOLONDRINAS
+model Provincia {
+  id                                                     String       @id
+  nombre                                                 String
+  paisId                                                 String
+  codigo                                                 Int          @unique
+  Canton                                                 Canton[]
+  Colegio                                                Colegio[]
+  Estudiante_Estudiante_provinciaNacimientoIdToProvincia Estudiante[] @relation("Estudiante_provinciaNacimientoIdToProvincia")
+  Estudiante_Estudiante_provinciaResidenciaIdToProvincia Estudiante[] @relation("Estudiante_provinciaResidenciaIdToProvincia")
+  Pais                                                   Pais         @relation(fields: [paisId], references: [id])
+
+  @@unique([nombre, paisId])
 }
 
-enum Provincia {
-  AZUAY
-  BOLIVAR
-  CAÑAR
-  CARCHI
-  COTOPAXI
-  CHIMBORAZO
-  EL_ORO
-  ESMERALDAS
-  GUAYAS
-  IMBABURA
-  LOJA
-  LOS_RIOS
-  MANABI
-  MORONA_SANTIAGO
-  NAPO
-  PASTAZA
-  PICHINCHA
-  TUNGURAHUA
-  ZAMORA_CHINCHIPE
+model PuebloYNacionalidad {
+  id                                                        String       @id
+  codigo                                                    Int          @unique
+  nombre                                                    String       @unique
+  Estudiante_Estudiante_nacionalidadIdToPuebloYNacionalidad Estudiante[] @relation("Estudiante_nacionalidadIdToPuebloYNacionalidad")
+  Estudiante_Estudiante_puebloIdToPuebloYNacionalidad       Estudiante[] @relation("Estudiante_puebloIdToPuebloYNacionalidad")
 }
 
-enum Sexo {
-  HOMBRE
-  MUJER
+model SectorEconomico {
+  id         String       @id
+  nombre     String       @unique
+  codigo     Int          @unique
+  Estudiante Estudiante[]
 }
 
-enum Genero {
-  MASCULINO
-  FEMENINO
+enum BonoDesarrollo {
+  SI
+  NO
+}
+
+enum CuartaRazonBeca {
+  PUEBLOS_Y_NACIONALIDADES
+  NO_APLICA
+}
+
+enum Discapacidad {
+  SI
+  NO
+}
+
+enum EntornoInstitucionalPracticasProfesionales {
+  PUBLICA
+  PRIVADA
+  ONG
+  OTRO
+  NO_APLICA
 }
 
 enum EstadoCivil {
@@ -444,8 +270,13 @@ enum EstadoCivil {
   VIUDO
 }
 
+enum EstudianteOcupacion {
+  SOLO_ESTUDIA
+  TRABAJA_Y_ESTUDIA
+}
+
 enum Etnia {
-  INDÍGENA
+  INDIGENA
   AFROECUATORIANO
   NEGRO
   MULATO
@@ -456,73 +287,46 @@ enum Etnia {
   NO_REGISTRA
 }
 
-enum PuebloNacionalidad {
-  KICHWA
-  AWÁ
-  CHACHI
-  ÉPERA
-  TSÁCHILA
-  ACHUAR
-  COFÁN
-  SECOYA
-  SHIWIAR
-  SHUAR
-  WAORANI
-  SÁPARA
-  MANTA
-  PALTA
-  CHIBULEO
-  KAÑARI
-  KARANKI
-  KAYAMPI
-  KISAPINCHA
-  KITU_KARA
-  NATABUELA
-  OTAVALO
-  PANZALEO
-  PURUHÁ
-  SALASACA
-  SARAGURO
-  TOMABELA
-  WARANKA
-  QUIJOS
-  PASTO
+enum FinanciamientoBeca {
+  FONDOS_PROPIOS
+  TRANFERENCIA_DEL_ESTADO
+  DONACIONES
   NO_APLICA
 }
 
-enum TipoSangre {
-  A_POSITIVO
-  A_NEGATIVO
-  B_POSITIVO
-  B_NEGATIVO
-  AB_POSITIVO
-  AB_NEGATIVO
-  O_POSITIVO
-  O_NEGATIVO
+enum Genero {
+  MASCULINO
+  FEMENINO
 }
 
-enum Discapacidad {
+enum HaPerdidoLaGratuidad {
+  SI
+  NO
+  NO_APLICA
+}
+
+enum HaRealizadoPracticasPreprofesionales {
   SI
   NO
 }
 
-enum TipoDiscapacidad {
-  FÍSICA
-  INTELECTUAL
-  AUDITIVA
-  VISUAL
-  MENTAL
-  OTRA
+enum HaRepetidoAlMenosUnaMateria {
+  SI
+  NO
+}
+
+enum IngresosEstudiante {
+  FINANCIAR_ESTUDIOS
+  PARA_MANTENER_HOGAR
+  GASTOS_PERSONALES
   NO_APLICA
 }
 
-enum TipoColegio {
-  FISCAL
-  FISCOMISIONAL
-  PARTICULAR
-  MUNICIPAL
-  EXTRANJERO
-  NO_APLICA
+enum JornadaCarrera {
+  MATUTINA
+  VESPERTINA
+  NOCTURNA
+  INTENSIVA
 }
 
 enum ModalidadCarrera {
@@ -534,19 +338,6 @@ enum ModalidadCarrera {
   HIBRIDA
 }
 
-enum JornadaCarrera {
-  MATUTINA
-  VESPERTINA
-  NOCTURNA
-  INTENSIVA 
-}
-
-enum TipoMatricula {
-  ORDINARIA
-  EXTRAORDINARIA
-  ESPECIAL
-}
-
 enum NivelAcademico {
   PRIMERO
   SEGUNDO
@@ -556,14 +347,29 @@ enum NivelAcademico {
   SEXTO
 }
 
-enum HaRepetidoAlMenosUnaMateria {
-  SI
-  NO
+enum NivelFormacionMadre {
+  CENTRO_ALFABETIZACION
+  JARDIN_INFANTES
+  PRIMARIA
+  EDUCACION_BASICA
+  SECUNDARIA
+  EDUCACION_MEDIA
+  SUPERIOR_NO_UNIVERSITARIA
+  SUPERIOR_UNIVERSITARIA
+  POSTGRADO
+  NO_APLICA
 }
 
-enum HaPerdidoLaGratuidad {
-  SI
-  NO
+enum NivelFormacionPadre {
+  CENTRO_ALFABETIZACION
+  JARDIN_INFANTES
+  PRIMARIA
+  EDUCACION_BASICA
+  SECUNDARIA
+  EDUCACION_MEDIA
+  SUPERIOR_NO_UNIVERSITARIA
+  SUPERIOR_UNIVERSITARIA
+  POSGRADO
   NO_APLICA
 }
 
@@ -574,39 +380,25 @@ enum Paralelo {
   D
 }
 
+enum ParticipaEnProyectoVinculacionSociedad {
+  SI
+  NO
+  NO_APLICA
+}
+
+enum PrimeraRazonBeca {
+  SOCIOECONOMICA
+  NO_APLICA
+}
+
+enum QuintaRazonBeca {
+  DISCAPACIDAD
+  NO_APLICA
+}
+
 enum RecibePensionDiferenciada {
   SI
   NO
-  NO_APLICA
-}
-
-enum EstudianteOcupacion {
-  SOLO_ESTUDIA
-  TRABAJA_Y_ESTUDIA
-}
-
-enum IngresosEstudiante {
-  FINANCIAR_ESTUDIOS
-  PARA_MANTENER_HOGAR
-  GASTOS_PERSONALES
-  NO_APLICA
-}
-
-enum BonoDesarrollo {
-  SI
-  NO
-}
-
-enum HaRealizadoPracticasPreprofesionales {
-  SI
-  NO
-}
-
-enum EntornoInstitucionalPracticasProfesionales {
-  PUBLICA
-  PRIVADA
-  ONG
-  OTRO
   NO_APLICA
 }
 
@@ -626,22 +418,11 @@ enum SectorEconomicoPracticaProfesional {
   ACTIVIDADES_PROFESIONALES_CIENTIFICAS_Y_TECNICAS
   SERVICIOS_ADMINISTRATIVOS_Y_DE_APOYO
   ADMINISTRACION_PUBLICA_Y_DEFENSA
-  ENSEÑANZA
+  ENSENANZA
   ATENCION_SALUD_HUMANA_Y_ASISTENCIA_SOCIAL
   ARTES_ENTRETENIMIENTO_Y_RECREACION
   OTRAS_ACTIVIDADES_DE_SERVICIOS
   HOGARES_PRODUCTORES_BIENES_SERVICIOS_USO_PROPIO
-  NO_APLICA
-}
-
-enum TipoBeca {
-  TOTAL
-  PARCIAL
-  NO_APLICA
-}
-
-enum PrimeraRazonBeca {
-  SOCIOECONOMICA
   NO_APLICA
 }
 
@@ -650,19 +431,9 @@ enum SegundaRazonBeca {
   NO_APLICA
 }
 
-enum TerceraRazonBeca {
-  DEPORTISTA
-  NO_APLICA
-}
-
-enum CuartaRazonBeca {
-  PUEBLOS_Y_NACIONALIDADES
-  NO_APLICA
-}
-
-enum QuintaRazonBeca {
-  DISCAPACIDAD
-  NO_APLICA
+enum Sexo {
+  HOMBRE
+  MUJER
 }
 
 enum SextaRazonBeca {
@@ -670,16 +441,8 @@ enum SextaRazonBeca {
   NO_APLICA
 }
 
-enum FinanciamientoBeca {
-  FONDOS_PROPIOS
-  TRANFERENCIA_DEL_ESTADO
-  DONACIONES
-  NO_APLICA
-}
-
-enum ParticipaEnProyectoVinculacionSociedad {
-  SI
-  NO
+enum TerceraRazonBeca {
+  DEPORTISTA
   NO_APLICA
 }
 
@@ -691,279 +454,49 @@ enum TipoAlcanceProyectoVinculacion {
   NO_APLICA
 }
 
-enum NivelFormacionPadre {
-  CENTRO_ALFABETIZACION
-  JARDIN_INFANTES
-  PRIMARIA
-  EDUCACION_BASICA
-  SECUNDARIA
-  EDUCACION_MEDIA
-  SUPERIOR_NO_UNIVERSITARIA
-  SUPERIOR_UNIVERSITARIA
-  POSGRADO
+enum TipoBeca {
+  TOTAL
+  PARCIAL
   NO_APLICA
 }
 
-enum NivelFormacionMadre {
-  CENTRO_ALFABETIZACION
-  JARDIN_INFANTES
-  PRIMARIA
-  EDUCACION_BASICA
-  SECUNDARIA
-  EDUCACION_MEDIA
-  SUPERIOR_NO_UNIVERSITARIA
-  SUPERIOR_UNIVERSITARIA
-  POSTGRADO
+enum TipoColegio {
+  FISCAL
+  FISCOMISIONAL
+  PARTICULAR
+  MUNICIPAL
+  EXTRANJERO
   NO_APLICA
 }
 
-enum Pais {
-  AFGANISTÁN
-  ALBANIA
-  ALEMANIA
-  ANDORRA
-  ANGOLA
-  ANGUILA
-  ANTIGUA_Y_BARBUDA
-  ARABIA_SAUDITA
-  ARGELIA
-  ARGENTINA
-  ARMENIA
-  ARUBA
-  AUSTRALIA
-  AUSTRIA
-  AZERBAİYÁN
-  BAHAMAS
-  BAHREIN
-  BANGLADESH
-  BARBADOS
-  BÉLGICA
-  BELICE
-  BENIN
-  BERMUDAS
-  BIELORRUSIA
-  BOLIVIA
-  BONAIRE_SAN_EUSTAQUIO_Y_SABA
-  BOSNIA_Y_HERZEGOVINA
-  BOTSWANA
-  BRASIL
-  BRUNEI_DARUSSALAM
-  BULGARIA
-  BURKINA_FASO
-  BURUNDI
-  BUTÁN
-  CABO_VERDE
-  CAMBOYA
-  CAMERÚN
-  CANADA
-  CHAD
-  CHILE
-  CHINA
-  CHIPRE
-  COLOMBIA
-  COMORAS
-  CONGO
-  COREA_DEL_NORTE
-  COREA_DEL_SUR
-  COSTA_DE_MARFIL
-  COSTA_RICA
-  CROACIA
-  CUBA
-  CURAÇAO
-  DINAMARCA
-  DJIBOUTI
-  DOMINICA
-  ECUADOR
-  EGIPTO
-  EL_SALVADOR
-  EL_VATICANO
-  EMIRATOS_ÁRABES_UNIDOS
-  ERITREA
-  ESLOVAQUIA
-  ESLOVENIA
-  ESPAÑA
-  ESTADO_DE_PALESTINA
-  ESTADOS_UNIDOS_DE_AMÉRICA
-  ESTONIA
-  ETIOPÍA
-  FIYI
-  FILIPINAS
-  FINLANDIA
-  FRANCIA
-  GABÓN
-  GAMBIA
-  GEORGIA
-  GHANA
-  GIBRALTAR
-  GRANADA
-  GRECIA
-  GROENLANDIA
-  GUADALUPE
-  GUAM
-  GUATEMALA
-  GUAYANA_FRANCESA
-  GUERNSEY
-  GUINEA
-  GUINEA_ECUATORIAL
-  GUINEA_BISSAU
-  GUYANA
-  HAITÍ
-  HONDURAS
-  HONG_KONG
-  HUNGRÍA
-  INDIA
-  INDONESIA
-  IRAK
-  IRÁN
-  IRLANDA
-  ISLA_DE_MAN
-  ISLA_NORFOLK
-  ISLANDIA
-  ISLAS_ÅLAND
-  ISLAS_CAIMÁN
-  ISLAS_COOK
-  ISLAS_FEROE
-  ISLAS_MALVINAS_FALKLAND
-  ISLAS_MARIANAS_DEL_NORTE
-  ISLAS_MARSHALL
-  ISLAS_SALOMÓN
-  ISLAS_TURCAS_Y_CAICOS
-  ISLAS_VÍRGENES_AMERICANAS
-  ISLAS_VÍRGENES_BRITÁNICAS
-  ISLAS_WALLIS_Y_FUTUNA
-  ISRAEL
-  ITALIA
-  JAMAICA
-  JAPÓN
-  JERSEY
-  JORDANIA
-  KAZAJSTÁN
-  KENYA
-  KIRGUISTÁN
-  KIRIBATI
-  KUWAIT
-  LA_EX_REPÚBLICA_YUGOSLAVA_DE_MACEDONIA
-  LESOTO
-  LETONIA
-  LÍBANO
-  LIBERIA
-  LIBIA
-  LIECHTENSTEIN
-  LITUANIA
-  LUXEMBURGO
-  MACAO
-  MADAGASCAR
-  MALASIA
-  MALAUI
-  MALDIVAS
-  MALÍ
-  MALTA
-  MARRUECOS
-  MARTINICA
-  MAURICIO
-  MAURITANIA
-  MAYOTTE
-  MÉXICO
-  MICRONESIA
-  MÓNACO
-  MONGOLIA
-  MONTENEGRO
-  MONTSERRAT
-  MOZAMBIQUE
-  MYANMAR
-  NAMIBIA
-  NAURU
-  NEPAL
-  NICARAGUA
-  NÍGER
-  NIGERIA
-  NIUE
-  NORUEGA
-  NUEVA_CALEDONIA
-  NUEVA_ZELANDA
-  OMÁN
-  PAÍSES_BAJOS
-  PAKISTÁN
-  PALAU
-  PANAMÁ
-  PAPÚA_NUEVA_GUINEA
-  PARAGUAY
-  PERÚ
-  PITCAIRN
-  POLINESIA_FRANCESA
-  POLONIA
-  PORTUGAL
-  PUERTO_RICO
-  QATAR
-  REINO_UNIDO_DE_GRAN_BRETAÑA_E_IRLANDA_DEL_NORTE
-  REPÚBLICA_ÁRABE_SIRIA
-  REPÚBLICA_CENTROAFRICANA
-  REPÚBLICA_CHECA
-  REPÚBLICA_DE_MOLDOVIA
-  REPÚBLICA_DEMOCRÁTICA_DEL_CONGO
-  REPÚBLICA_DEMOCRÁTICA_POPULAR_LAO
-  REPÚBLICA_DOMINICANA
-  REPÚBLICA_UNIDA_DE_TANZANIA
-  RÉUNION
-  RUMANÍA
-  RUSIA
-  RWANDA
-  SÁHARA_OCCIDENTAL
-  SAINT_BARTHÉLEMY
-  SAINT_MARTIN
-  SAMOA
-  SAMOA_AMERICANA
-  SAN_CRISTÓBAL_Y_NIEVES
-  SAN_MARINO
-  SAN_PEDRO_Y_MIQUELÓN
-  SAN_VICENTE_Y_LAS_GRANADINAS
-  SANTA_ELENA
-  SANTA_LUCÍA
-  SANTO_TOMÉ_Y_PRÍNCIPE
-  SENEGAL
-  SERBIA
-  SEYCHELLES
-  SIERRA_LEONA
-  SINGAPUR
-  SINT_MAARTEN
-  SOMALIA
-  SRI_LANKA
-  SUDÁFRICA
-  SUDÁN
-  SUDÁN_DEL_SUR
-  SUECIA
-  SUIZA
-  SURINAME
-  SVALBARD_Y_JAN_MAYEN
-  SWAZILANDIA
-  TAILANDIA
-  TAYIKISTÁN
-  TIMOR_LESTE
-  TOGO
-  TOKELAU
-  TONGA
-  TRINIDAD_Y_TOBAGO
-  TÚNEZ
-  TURKMENISTÁN
-  TURQUÍA
-  TUVALU
-  UCRANIA
-  UGANDA
-  URUGUAY
-  UZBEKISTÁN
-  VANUATU
-  VENEZUELA
-  VIET_NAM
-  YEMEN
-  ZAMBIA
-  ZIMBABWE
-  ANTÁRTIDA
-  ISLA_BOUVET
-  TERRITORIO_BRITÁNICO_DE_LA_OCÉANO_ÍNDICO
-  TAIWÁN
-  ISLA_DE_NAVIDAD
-  ISLAS_COCOS
-  GEORGIA_DEL_SUR_Y_LAS_ISLAS_SANDWICH_DEL_SUR
-  TERRITORIOS_AUSTRALES_FRANCES
-  NO_REGISTRA
+enum TipoDiscapacidad {
+  FISICA
+  INTELECTUAL
+  AUDITIVA
+  VISUAL
+  MENTAL
+  OTRA
+  NO_APLICA
+}
+
+enum TipoDocumento {
+  CEDULA
+  PASAPORTE
+}
+
+enum TipoMatricula {
+  ORDINARIA
+  EXTRAORDINARIA
+  ESPECIAL
+}
+
+enum TipoSangre {
+  A_POSITIVO
+  A_NEGATIVO
+  B_POSITIVO
+  B_NEGATIVO
+  AB_POSITIVO
+  AB_NEGATIVO
+  O_POSITIVO
+  O_NEGATIVO
 }
