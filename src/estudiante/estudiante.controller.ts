@@ -55,6 +55,7 @@ import {
   TipoAlcanceProyectoVinculacion,
   NivelFormacionPadre,
   NivelFormacionMadre,
+  DisenoCurricular,
 } from '@prisma/client';
 const BUCKET_TITULO = 'titulo';
 const BUCKET_MAPS = 'maps';
@@ -211,6 +212,7 @@ export class EstudianteController {
       ),
       NivelFormacionPadre: Object.values(NivelFormacionPadre),
       NivelFormacionMadre: Object.values(NivelFormacionMadre),
+      DisenoCurricular: Object.values(DisenoCurricular),
       // Catálogos desde la base de datos
       PuebloNacionalidad: pueblosYNacionalidades.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo })),
       Pais: paises.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo })),

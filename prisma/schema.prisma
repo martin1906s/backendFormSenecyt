@@ -30,7 +30,6 @@ model Colegio {
   Provincia       Provincia   @relation(fields: [provinciaId], references: [id])
   Canton          Canton      @relation(fields: [cantonId], references: [id])
 
-  @@unique([nombre, cantonId])
   @@index([provinciaId])
   @@index([cantonId])
 }
@@ -115,7 +114,7 @@ model Estudiante {
   carrera                                                            String                                     @default("NA")
   correoInstitucional                                                String                                     @default("NA")
   direccionDomicilio                                                 String                                     @default("NA")
-  disenoCurricular                                                   String                                     @default("NA")
+  disenoCurricular                                                   DisenoCurricular?
   enfermedadCatastrofica                                             String                                     @default("NA")
   lugarResidencia                                                    String                                     @default("NA")
   medicamentos                                                       String                                     @default("NA")
@@ -499,4 +498,9 @@ enum TipoSangre {
   AB_NEGATIVO
   O_POSITIVO
   O_NEGATIVO
+}
+
+enum DisenoCurricular {
+  VALIDACION
+  CURRICULAR
 }
