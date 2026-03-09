@@ -141,6 +141,7 @@ model Estudiante {
   egresoTransporte                                                   String                                     @default("NA")
   egresoVivienda                                                     String                                     @default("NA")
   estructuraVivienda                                                 String                                     @default("NA")
+  estructuraViviendaEspecifique                                      String?
   estudianteCabezaFamiliar                                           String                                     @default("NA")
   familiaDiscapacidadEnfermedadCatastrofica                          String                                     @default("NA")
   familiaParentesco                                                  String                                     @default("NA")
@@ -166,6 +167,8 @@ model Estudiante {
   tipoViolenciaFamiliar                                              String                                     @default("NA")
   tipoVivienda                                                       String                                     @default("NA")
   tituloBachiller                                                    String                                     @default("NA")
+  copiaCedula                                                        String                                     @default("NA")
+  copiaPapeleta                                                      String                                     @default("NA")
   totalEgresos                                                       String                                     @default("NA")
   violenciaFamiliar                                                  String                                     @default("NA")
   zonaVivienda                                                       String                                     @default("NA")

@@ -391,6 +391,14 @@ export class CreateEstudianteDto {
 
   @IsString()
   @IsOptional()
+  copiaCedula?: string;
+
+  @IsString()
+  @IsOptional()
+  copiaPapeleta?: string;
+
+  @IsString()
+  @IsOptional()
   anioGraduacion?: string;
 
   @IsString()
@@ -453,6 +461,11 @@ export class CreateEstudianteDto {
   @IsString()
   @IsOptional()
   estructuraVivienda?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(120)
+  estructuraViviendaEspecifique?: string;
 
   @IsString()
   @IsOptional()

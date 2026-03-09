@@ -127,6 +127,64 @@ export class EstudianteController {
     return { ok: true };
   }
 
+  @Post('upload-copia-cedula')
+  @UseInterceptors(FileInterceptor('archivo'))
+  async uploadCopiaCedula(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    // Solo aceptar PDFs
+    if (file.mimetype !== 'application/pdf') {
+      throw new BadRequestException('Solo se permiten archivos PDF.');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'copia-cedula');
+    return { url };
+  }
+
+  @Post('delete-copia-cedula')
+  async deleteCopiaCedula(@Body() body: { url: string }): Promise<{ ok: boolean }> {
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket titulo');
+    }
+    await this.storage.deleteByPublicUrl(url);
+    return { ok: true };
+  }
+
+  @Post('upload-copia-papeleta')
+  @UseInterceptors(FileInterceptor('archivo'))
+  async uploadCopiaPapeleta(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    // Solo aceptar PDFs
+    if (file.mimetype !== 'application/pdf') {
+      throw new BadRequestException('Solo se permiten archivos PDF.');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'copia-papeleta');
+    return { url };
+  }
+
+  @Post('delete-copia-papeleta')
+  async deleteCopiaPapeleta(@Body() body: { url: string }): Promise<{ ok: boolean }> {
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket titulo');
+    }
+    await this.storage.deleteByPublicUrl(url);
+    return { ok: true };
+  }
+
   @Post()
   @UsePipes(new ValidationPipe({ 
     whitelist: true, 

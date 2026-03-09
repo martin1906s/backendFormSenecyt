@@ -252,6 +252,102 @@ export class EstudianteService {
         dataToCreate.Canton_Estudiante_cantonResidenciaIdToCanton = { connect: { id: cantonResidenciaId } };
       }
 
+      // Manejar formato especial de estructuraVivienda: "OTRO: [especificación]"
+      if (dataToCreate.estructuraVivienda && dataToCreate.estructuraVivienda.startsWith('OTRO: ')) {
+        const especificacion = dataToCreate.estructuraVivienda.substring(7); // Remover "OTRO: "
+        dataToCreate.estructuraVivienda = 'OTRO';
+        // Si no viene estructuraViviendaEspecifique, usar la especificación extraída
+        if (!dataToCreate.estructuraViviendaEspecifique || dataToCreate.estructuraViviendaEspecifique === '') {
+          dataToCreate.estructuraViviendaEspecifique = especificacion;
+        }
+      }
+
+      // Normalizar campos de características de vivienda
+      // Convertir strings vacíos a "NA" (excepto estructuraViviendaEspecifique que puede ser null)
+      const viviendaStringFields = [
+        'tipoPropiedadVivienda',
+        'estructuraVivienda',
+        'tipoVivienda',
+        'comparteHabitacion',
+        'conQuienVive',
+        'tamanoViviendaSuficiente'
+      ];
+
+      viviendaStringFields.forEach(field => {
+        if (dataToCreate[field] !== undefined && dataToCreate[field] !== null) {
+          // Si viene como string vacío, convertir a "NA"
+          if (dataToCreate[field] === '') {
+            dataToCreate[field] = 'NA';
+          }
+        } else if (dataToCreate[field] === undefined) {
+          // Si no viene, usar "NA" como default
+          dataToCreate[field] = 'NA';
+        }
+      });
+
+      // Manejar estructuraViviendaEspecifique (puede ser null o string vacío)
+      if (dataToCreate.estructuraViviendaEspecifique !== undefined) {
+        if (dataToCreate.estructuraViviendaEspecifique === '') {
+          dataToCreate.estructuraViviendaEspecifique = null;
+        }
+      } else {
+        dataToCreate.estructuraViviendaEspecifique = null;
+      }
+
+      // Manejar campos numéricos: si vienen como undefined, no incluirlos (Prisma usará null)
+      if (dataToCreate.cantidadBanos === undefined) {
+        delete dataToCreate.cantidadBanos;
+      }
+      if (dataToCreate.cantidadHabitaciones === undefined) {
+        delete dataToCreate.cantidadHabitaciones;
+      }
+
+      // Normalizar campos de financiamiento
+      // Campos booleanos: si vienen como undefined, establecer false como default
+      const financiamientoBooleanFields = [
+        'financiamientoFondosPropios',
+        'financiamientoAyudaPadres',
+        'financiamientoTarjetaCredito',
+        'financiamientoEntidadFinanciera',
+        'financiamientoTercerasPersonas'
+      ];
+
+      financiamientoBooleanFields.forEach(field => {
+        if (dataToCreate[field] === undefined) {
+          dataToCreate[field] = false;
+        }
+        // Asegurar que sea boolean (por si viene como string "true"/"false")
+        if (typeof dataToCreate[field] === 'string') {
+          dataToCreate[field] = dataToCreate[field] === 'true';
+        }
+      });
+
+      // Normalizar financiamientoQuienes: string vacío → "NA"
+      if (dataToCreate.financiamientoQuienes !== undefined && dataToCreate.financiamientoQuienes !== null) {
+        if (dataToCreate.financiamientoQuienes === '') {
+          dataToCreate.financiamientoQuienes = 'NA';
+        }
+      } else if (dataToCreate.financiamientoQuienes === undefined) {
+        dataToCreate.financiamientoQuienes = 'NA';
+      }
+
+      // Normalizar copiaCedula y copiaPapeleta: string vacío → "NA"
+      if (dataToCreate.copiaCedula !== undefined && dataToCreate.copiaCedula !== null) {
+        if (dataToCreate.copiaCedula === '') {
+          dataToCreate.copiaCedula = 'NA';
+        }
+      } else if (dataToCreate.copiaCedula === undefined) {
+        dataToCreate.copiaCedula = 'NA';
+      }
+
+      if (dataToCreate.copiaPapeleta !== undefined && dataToCreate.copiaPapeleta !== null) {
+        if (dataToCreate.copiaPapeleta === '') {
+          dataToCreate.copiaPapeleta = 'NA';
+        }
+      } else if (dataToCreate.copiaPapeleta === undefined) {
+        dataToCreate.copiaPapeleta = 'NA';
+      }
+
       if (composicionFamiliar?.length) {
         dataToCreate.ComposicionFamiliar = { create: composicionFamiliar.map((r) => ({
           nombresApellidos: r.nombresApellidos ?? 'NA',
@@ -312,10 +408,39 @@ export class EstudianteService {
   }
 
   async findAll() {
-    return await this.prisma.estudiante.findMany({
-      orderBy: { id: 'desc' },
-      include: { ComposicionFamiliar: true, IngresoFamiliar: true },
-    });
+    try {
+      return await this.prisma.estudiante.findMany({
+        orderBy: { id: 'desc' },
+        include: { 
+          ComposicionFamiliar: true, 
+          IngresoFamiliar: true,
+          PuebloYNacionalidad_Estudiante_nacionalidadIdToPuebloYNacionalidad: true,
+          PuebloYNacionalidad_Estudiante_puebloIdToPuebloYNacionalidad: true,
+          Pais_Estudiante_paisNacionalidadIdToPais: true,
+          Pais_Estudiante_paisResidenciaIdToPais: true,
+          Provincia_Estudiante_provinciaNacimientoIdToProvincia: true,
+          Provincia_Estudiante_provinciaResidenciaIdToProvincia: true,
+          Canton_Estudiante_cantonNacimientoIdToCanton: true,
+          Canton_Estudiante_cantonResidenciaIdToCanton: true,
+          SectorEconomico: true,
+        },
+      });
+    } catch (error) {
+      console.error('Error en findAll:', error);
+      if (error.code === 'P1001' || error.code === 'P1000') {
+        throw new InternalServerErrorException(
+          'Error de conexión a la base de datos. Verifica que DATABASE_URL esté configurada correctamente.',
+        );
+      }
+      if (error.code === 'ENETUNREACH' || error.code === 'ECONNREFUSED') {
+        throw new InternalServerErrorException(
+          'Error de conexión a la base de datos. Verifica que la base de datos esté disponible.',
+        );
+      }
+      throw new InternalServerErrorException(
+        `Error en la base de datos: ${error.message || 'Error desconocido'}`,
+      );
+    }
   }
 
   async findOne(id: number) {
@@ -468,6 +593,102 @@ export class EstudianteService {
         } else {
           data.Canton_Estudiante_cantonResidenciaIdToCanton = { disconnect: true };
         }
+      }
+
+      // Manejar formato especial de estructuraVivienda: "OTRO: [especificación]"
+      if (data.estructuraVivienda && typeof data.estructuraVivienda === 'string' && data.estructuraVivienda.startsWith('OTRO: ')) {
+        const especificacion = data.estructuraVivienda.substring(7); // Remover "OTRO: "
+        data.estructuraVivienda = 'OTRO';
+        // Si no viene estructuraViviendaEspecifique, usar la especificación extraída
+        if (!data.estructuraViviendaEspecifique || data.estructuraViviendaEspecifique === '') {
+          data.estructuraViviendaEspecifique = especificacion;
+        }
+      }
+
+      // Normalizar campos de características de vivienda
+      // Convertir strings vacíos a "NA" (excepto estructuraViviendaEspecifique que puede ser null)
+      const viviendaStringFields = [
+        'tipoPropiedadVivienda',
+        'estructuraVivienda',
+        'tipoVivienda',
+        'comparteHabitacion',
+        'conQuienVive',
+        'tamanoViviendaSuficiente'
+      ];
+
+      viviendaStringFields.forEach(field => {
+        if (data[field] !== undefined && data[field] !== null) {
+          // Si viene como string vacío, convertir a "NA"
+          if (data[field] === '') {
+            data[field] = 'NA';
+          }
+        } else if (data[field] === undefined) {
+          // Si no viene, usar "NA" como default
+          data[field] = 'NA';
+        }
+      });
+
+      // Manejar estructuraViviendaEspecifique (puede ser null o string vacío)
+      if (data.estructuraViviendaEspecifique !== undefined) {
+        if (data.estructuraViviendaEspecifique === '') {
+          data.estructuraViviendaEspecifique = null;
+        }
+      } else {
+        data.estructuraViviendaEspecifique = null;
+      }
+
+      // Manejar campos numéricos: si vienen como undefined, no incluirlos (Prisma usará null)
+      if (data.cantidadBanos === undefined) {
+        delete data.cantidadBanos;
+      }
+      if (data.cantidadHabitaciones === undefined) {
+        delete data.cantidadHabitaciones;
+      }
+
+      // Normalizar campos de financiamiento
+      // Campos booleanos: si vienen como undefined, establecer false como default
+      const financiamientoBooleanFields = [
+        'financiamientoFondosPropios',
+        'financiamientoAyudaPadres',
+        'financiamientoTarjetaCredito',
+        'financiamientoEntidadFinanciera',
+        'financiamientoTercerasPersonas'
+      ];
+
+      financiamientoBooleanFields.forEach(field => {
+        if (data[field] === undefined) {
+          data[field] = false;
+        }
+        // Asegurar que sea boolean (por si viene como string "true"/"false")
+        if (typeof data[field] === 'string') {
+          data[field] = data[field] === 'true';
+        }
+      });
+
+      // Normalizar financiamientoQuienes: string vacío → "NA"
+      if (data.financiamientoQuienes !== undefined && data.financiamientoQuienes !== null) {
+        if (data.financiamientoQuienes === '') {
+          data.financiamientoQuienes = 'NA';
+        }
+      } else if (data.financiamientoQuienes === undefined) {
+        data.financiamientoQuienes = 'NA';
+      }
+
+      // Normalizar copiaCedula y copiaPapeleta: string vacío → "NA"
+      if (data.copiaCedula !== undefined && data.copiaCedula !== null) {
+        if (data.copiaCedula === '') {
+          data.copiaCedula = 'NA';
+        }
+      } else if (data.copiaCedula === undefined) {
+        data.copiaCedula = 'NA';
+      }
+
+      if (data.copiaPapeleta !== undefined && data.copiaPapeleta !== null) {
+        if (data.copiaPapeleta === '') {
+          data.copiaPapeleta = 'NA';
+        }
+      } else if (data.copiaPapeleta === undefined) {
+        data.copiaPapeleta = 'NA';
       }
 
       if (Array.isArray(composicionFamiliar)) {
