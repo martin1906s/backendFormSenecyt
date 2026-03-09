@@ -342,12 +342,10 @@ export class EstudianteService {
   }
 
   async findOneByCedula(tipoDocumento: string, numeroIdentificacion: string) {
-    const estudiante = await this.prisma.estudiante.findUnique({
+    const estudiante = await this.prisma.estudiante.findFirst({
       where: {
-        numeroIdentificacion_tipoDocumento: {
-          numeroIdentificacion,
-          tipoDocumento: tipoDocumento as any,
-        },
+        numeroIdentificacion,
+        tipoDocumento: tipoDocumento as any,
       },
       include: { 
         ComposicionFamiliar: true, 

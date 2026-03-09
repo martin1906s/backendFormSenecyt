@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min, IsArray, ValidateNested } from 'class-validator';
+import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min, IsArray, ValidateNested, IsBoolean, MaxLength } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { CreateComposicionFamiliarDto } from './create-composicion-familiar.dto';
 import { CreateIngresoFamiliarDto } from './create-ingreso-familiar.dto';
@@ -201,6 +201,11 @@ export class CreateEstudianteDto {
   @IsNotEmpty()
   estudianteOcupacion: EstudianteOcupacion;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  trabajoEspecifique?: string;
+
   @IsEnum(IngresosEstudiante)
   @IsNotEmpty()
   ingresosEstudiante: IngresosEstudiante;
@@ -392,6 +397,26 @@ export class CreateEstudianteDto {
   @IsOptional()
   financiamientoQuienes?: string;
 
+  @IsBoolean()
+  @IsOptional()
+  financiamientoFondosPropios?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  financiamientoAyudaPadres?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  financiamientoTarjetaCredito?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  financiamientoEntidadFinanciera?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  financiamientoTercerasPersonas?: boolean;
+
   @IsString()
   @IsOptional()
   referenciaDomiciliaria?: string;
@@ -399,6 +424,11 @@ export class CreateEstudianteDto {
   @IsString()
   @IsOptional()
   parroquiaResidencia?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  parroquiaProcedencia?: string;
 
   @IsString()
   @IsOptional()

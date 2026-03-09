@@ -81,6 +81,7 @@ model Estudiante {
   haPerdidoLaGratuidad                                               HaPerdidoLaGratuidad
   recibePensionDiferenciada                                          RecibePensionDiferenciada
   estudianteOcupacion                                                EstudianteOcupacion
+  trabajoEspecifique                                                  String                                     @default("NA")
   ingresosEstudiante                                                 IngresosEstudiante
   bonoDesarrollo                                                     BonoDesarrollo
   haRealizadoPracticasPreprofesionales                               HaRealizadoPracticasPreprofesionales
@@ -147,9 +148,15 @@ model Estudiante {
   familiaServiciosMedicos                                            String                                     @default("NA")
   familiaServiciosMedicosDetalle                                     String                                     @default("NA")
   financiamientoQuienes                                              String                                     @default("NA")
+  financiamientoFondosPropios                                         Boolean?
+  financiamientoAyudaPadres                                           Boolean?
+  financiamientoTarjetaCredito                                        Boolean?
+  financiamientoEntidadFinanciera                                     Boolean?
+  financiamientoTercerasPersonas                                      Boolean?
   nombreColegioProcedencia                                           String                                     @default("NA")
   numeroConvencional                                                 String                                     @default("NA")
   parroquiaResidencia                                                String                                     @default("NA")
+  parroquiaProcedencia                                               String                                     @default("NA")
   presentaAlergiaImportante                                          String                                     @default("NA")
   presentaCarnetDiscapacidad                                         String                                     @default("NA")
   referenciaDomiciliaria                                             String                                     @default("NA")
