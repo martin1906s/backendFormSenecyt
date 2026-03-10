@@ -11,3 +11,4 @@ import { CatalogosModule } from './catalogos/catalogos.module';
   providers: [AppService],
 })
 export class AppModule {}
+ 
