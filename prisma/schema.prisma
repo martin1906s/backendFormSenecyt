@@ -68,7 +68,7 @@ model Estudiante {
   numCarnetConadis                                                   String                                     @default("NA")
   tipoDiscapacidad                                                   TipoDiscapacidad
   fechaNacimiento                                                    String
-  tipoColegioId                                                      TipoColegio
+  tipoColegioId                                                      TipoColegio?
   modalidadCarrera                                                   ModalidadCarrera
   jornadaCarrera                                                     JornadaCarrera
   fechaInicioCarrera                                                 String

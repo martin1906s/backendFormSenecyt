@@ -115,7 +115,7 @@ export class EstudianteService {
       numCarnetConadis: 'NA',
       tipoDiscapacidad: firstEnum(TipoDiscapacidad),
       fechaNacimiento: 'NA',
-      tipoColegioId: firstEnum(TipoColegio),
+      tipoColegioId: undefined, // Opcional: puede ser null para colegios nuevos
       modalidadCarrera: firstEnum(ModalidadCarrera),
       jornadaCarrera: firstEnum(JornadaCarrera),
       fechaInicioCarrera: 'NA',
@@ -346,6 +346,16 @@ export class EstudianteService {
         }
       } else if (dataToCreate.copiaPapeleta === undefined) {
         dataToCreate.copiaPapeleta = 'NA';
+      }
+
+      // Normalizar tipoColegioId: si viene vacío o undefined, dejarlo como null (para colegios nuevos)
+      if (dataToCreate.tipoColegioId !== undefined) {
+        if (dataToCreate.tipoColegioId === '' || dataToCreate.tipoColegioId === null) {
+          dataToCreate.tipoColegioId = null;
+        }
+      } else {
+        // Si no viene, dejarlo como undefined para que Prisma use null (campo opcional)
+        dataToCreate.tipoColegioId = null;
       }
 
       if (composicionFamiliar?.length) {
@@ -690,6 +700,14 @@ export class EstudianteService {
       } else if (data.copiaPapeleta === undefined) {
         data.copiaPapeleta = 'NA';
       }
+
+      // Normalizar tipoColegioId: si viene vacío o undefined, dejarlo como null (para colegios nuevos)
+      if (data.tipoColegioId !== undefined) {
+        if (data.tipoColegioId === '' || data.tipoColegioId === null) {
+          data.tipoColegioId = null;
+        }
+      }
+      // Si no viene, no hacer nada (mantener el valor existente o null si es nuevo)
 
       if (Array.isArray(composicionFamiliar)) {
         await this.prisma.composicionFamiliar.deleteMany({ where: { estudianteId: id } });

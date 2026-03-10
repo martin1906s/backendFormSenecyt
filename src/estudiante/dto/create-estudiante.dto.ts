@@ -142,8 +142,8 @@ export class CreateEstudianteDto {
   sectorEconomicoId?: string;
 
   @IsEnum(TipoColegio)
-  @IsNotEmpty()
-  tipoColegioId: TipoColegio;
+  @IsOptional()
+  tipoColegioId?: TipoColegio;
 
   @IsEnum(ModalidadCarrera)
   @IsNotEmpty()
