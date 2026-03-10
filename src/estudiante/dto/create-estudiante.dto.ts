@@ -1,7 +1,8 @@
-import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min, IsArray, ValidateNested, IsBoolean, MaxLength } from 'class-validator';
+import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min, IsArray, ValidateNested, IsBoolean, MaxLength, Validate } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { CreateComposicionFamiliarDto } from './create-composicion-familiar.dto';
 import { CreateIngresoFamiliarDto } from './create-ingreso-familiar.dto';
+import { AlergiasConditionalValidator } from '../../common/validators/alergias-conditional.validator';
 import {
   TipoDocumento,
   Sexo,
@@ -322,6 +323,7 @@ export class CreateEstudianteDto {
   @IsOptional()
   periodoAcademico?: string;
 
+  @Validate(AlergiasConditionalValidator)
   @IsString()
   @IsOptional()
   alergias?: string;

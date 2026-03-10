@@ -358,6 +358,16 @@ export class EstudianteService {
         dataToCreate.tipoColegioId = null;
       }
 
+      // Normalizar alergias: si presentaAlergiaImportante !== 'SI', entonces alergias debe ser 'NA'
+      if (dataToCreate.presentaAlergiaImportante !== undefined && dataToCreate.presentaAlergiaImportante !== 'SI') {
+        if (dataToCreate.alergias !== undefined && dataToCreate.alergias !== null && dataToCreate.alergias !== '' && dataToCreate.alergias !== 'NA') {
+          // Si viene con un valor diferente a 'NA' o vacío, normalizar a 'NA'
+          dataToCreate.alergias = 'NA';
+        } else if (dataToCreate.alergias === undefined || dataToCreate.alergias === null || dataToCreate.alergias === '') {
+          dataToCreate.alergias = 'NA';
+        }
+      }
+
       if (composicionFamiliar?.length) {
         dataToCreate.ComposicionFamiliar = { create: composicionFamiliar.map((r) => ({
           nombresApellidos: r.nombresApellidos ?? 'NA',
@@ -708,6 +718,16 @@ export class EstudianteService {
         }
       }
       // Si no viene, no hacer nada (mantener el valor existente o null si es nuevo)
+
+      // Normalizar alergias: si presentaAlergiaImportante !== 'SI', entonces alergias debe ser 'NA'
+      if (data.presentaAlergiaImportante !== undefined && data.presentaAlergiaImportante !== 'SI') {
+        if (data.alergias !== undefined && data.alergias !== null && data.alergias !== '' && data.alergias !== 'NA') {
+          // Si viene con un valor diferente a 'NA' o vacío, normalizar a 'NA'
+          data.alergias = 'NA';
+        } else if (data.alergias === undefined || data.alergias === null || data.alergias === '') {
+          data.alergias = 'NA';
+        }
+      }
 
       if (Array.isArray(composicionFamiliar)) {
         await this.prisma.composicionFamiliar.deleteMany({ where: { estudianteId: id } });
