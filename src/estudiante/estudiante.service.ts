@@ -486,6 +486,115 @@ export class EstudianteService {
     return estudiante;
   }
 
+  /**
+   * Verifica si un estudiante tiene un registro completo según los 7 pasos de la FICHA ESTUDIANTIL
+   */
+  private verificarRegistroCompleto(estudiante: any): boolean {
+    if (!estudiante) return false;
+
+    // Paso 1 - Identificación
+    if (!estudiante.tipoDocumento || !estudiante.numeroIdentificacion || !estudiante.fechaNacimiento) {
+      return false;
+    }
+
+    // Paso 2 - Datos Personales
+    if (
+      !estudiante.primerApellido ||
+      !estudiante.primerNombre ||
+      !estudiante.sexo ||
+      !estudiante.genero ||
+      !estudiante.estadoCivil ||
+      !estudiante.etnia ||
+      !estudiante.tipoSangre
+    ) {
+      return false;
+    }
+
+    // Paso 3 - Discapacidad
+    if (!estudiante.discapacidad) {
+      return false;
+    }
+    // Si tiene discapacidad, verificar campos relacionados
+    if (estudiante.discapacidad === 'SI') {
+      if (
+        !estudiante.tipoDiscapacidad ||
+        !estudiante.porcentajeDiscapacidad ||
+        estudiante.porcentajeDiscapacidad === 'NA' ||
+        !estudiante.numCarnetConadis ||
+        estudiante.numCarnetConadis === 'NA'
+      ) {
+        return false;
+      }
+    }
+
+    // Paso 4 - Nacionalidad y Residencia
+    if (
+      !estudiante.nacionalidadId ||
+      !estudiante.paisNacionalidadId ||
+      !estudiante.provinciaNacimientoId ||
+      !estudiante.cantonNacimientoId ||
+      !estudiante.paisResidenciaId ||
+      !estudiante.provinciaResidenciaId ||
+      !estudiante.cantonResidenciaId ||
+      !estudiante.direccionDomicilio ||
+      estudiante.direccionDomicilio === 'NA'
+    ) {
+      return false;
+    }
+    // Nota: parroquiaNacimientoId no existe en el schema, solo parroquiaResidencia (string) y parroquiaProcedencia (string)
+
+    // Paso 5 - Información Académica
+    if (
+      !estudiante.carrera ||
+      estudiante.carrera === 'NA' ||
+      !estudiante.modalidadCarrera ||
+      !estudiante.jornadaCarrera ||
+      !estudiante.fechaInicioCarrera ||
+      !estudiante.fechaMatricula ||
+      !estudiante.tipoMatricula ||
+      !estudiante.duracionPeriodoAcademico ||
+      !estudiante.nivelAcademico ||
+      !estudiante.paralelo
+    ) {
+      return false;
+    }
+    // tipoColegioId es opcional ahora (puede ser null para colegios nuevos)
+
+    // Paso 6 - Información Económica
+    if (!estudiante.estudianteOcupacion || !estudiante.ingresosEstudiante) {
+      return false;
+    }
+
+    // Paso 7 - Prácticas Preprofesionales
+    if (!estudiante.haRealizadoPracticasPreprofesionales) {
+      return false;
+    }
+    // Si ha realizado prácticas, verificar campos relacionados
+    if (estudiante.haRealizadoPracticasPreprofesionales === 'SI') {
+      if (
+        !estudiante.nroHorasPracticasPreprofesionalesPorPeriodo ||
+        estudiante.nroHorasPracticasPreprofesionalesPorPeriodo === 'NA' ||
+        !estudiante.entornoInstitucionalPracticasProfesionales ||
+        !estudiante.sectorEconomicoPracticaProfesional
+      ) {
+        return false;
+      }
+    }
+
+    // Campos de Contacto (también requeridos)
+    if (
+      !estudiante.correoElectronico ||
+      estudiante.correoElectronico === 'NA' ||
+      !estudiante.numeroCelular ||
+      !estudiante.direccionDomicilio ||
+      estudiante.direccionDomicilio === 'NA'
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   async findOneByCedula(tipoDocumento: string, numeroIdentificacion: string) {
     const estudiante = await this.prisma.estudiante.findFirst({
       where: {
@@ -508,7 +617,18 @@ export class EstudianteService {
     });
 
     // Si no existe, devolver null (200) para que el front pueda llenar el formulario desde cero
-    return estudiante ?? null;
+    if (!estudiante) {
+      return null;
+    }
+
+    // Verificar si el registro está completo
+    const registroCompletado = this.verificarRegistroCompleto(estudiante);
+
+    // Agregar el campo registroCompletado a la respuesta
+    return {
+      ...estudiante,
+      registroCompletado,
+    };
   }
 
   async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
