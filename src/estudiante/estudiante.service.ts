@@ -488,107 +488,50 @@ export class EstudianteService {
 
   /**
    * Verifica si un estudiante tiene un registro completo según los 7 pasos de la FICHA ESTUDIANTIL
+   * Solo valida los campos críticos de los pasos 1-7 según las instrucciones del frontend
    */
   private verificarRegistroCompleto(estudiante: any): boolean {
     if (!estudiante) return false;
 
+    // Helper para verificar si un valor es válido (no null, no undefined, no vacío, no "NA")
+    const esValido = (valor: any): boolean => {
+      return valor !== null && valor !== undefined && valor !== '' && valor !== 'NA';
+    };
+
     // Paso 1 - Identificación
-    if (!estudiante.tipoDocumento || !estudiante.numeroIdentificacion || !estudiante.fechaNacimiento) {
+    if (!esValido(estudiante.tipoDocumento) || 
+        !esValido(estudiante.numeroIdentificacion) || 
+        !esValido(estudiante.fechaNacimiento)) {
       return false;
     }
 
     // Paso 2 - Datos Personales
-    if (
-      !estudiante.primerApellido ||
-      !estudiante.primerNombre ||
-      !estudiante.sexo ||
-      !estudiante.genero ||
-      !estudiante.estadoCivil ||
-      !estudiante.etnia ||
-      !estudiante.tipoSangre
-    ) {
+    if (!esValido(estudiante.primerApellido) || 
+        !esValido(estudiante.primerNombre) || 
+        !esValido(estudiante.sexo)) {
       return false;
-    }
-
-    // Paso 3 - Discapacidad
-    if (!estudiante.discapacidad) {
-      return false;
-    }
-    // Si tiene discapacidad, verificar campos relacionados
-    if (estudiante.discapacidad === 'SI') {
-      if (
-        !estudiante.tipoDiscapacidad ||
-        !estudiante.porcentajeDiscapacidad ||
-        estudiante.porcentajeDiscapacidad === 'NA' ||
-        !estudiante.numCarnetConadis ||
-        estudiante.numCarnetConadis === 'NA'
-      ) {
-        return false;
-      }
     }
 
     // Paso 4 - Nacionalidad y Residencia
-    if (
-      !estudiante.nacionalidadId ||
-      !estudiante.paisNacionalidadId ||
-      !estudiante.provinciaNacimientoId ||
-      !estudiante.cantonNacimientoId ||
-      !estudiante.paisResidenciaId ||
-      !estudiante.provinciaResidenciaId ||
-      !estudiante.cantonResidenciaId ||
-      !estudiante.direccionDomicilio ||
-      estudiante.direccionDomicilio === 'NA'
-    ) {
+    if (!esValido(estudiante.paisNacionalidadId) || 
+        !esValido(estudiante.provinciaNacimientoId) || 
+        !esValido(estudiante.cantonNacimientoId) ||
+        !esValido(estudiante.paisResidenciaId) || 
+        !esValido(estudiante.provinciaResidenciaId) || 
+        !esValido(estudiante.cantonResidenciaId)) {
       return false;
     }
-    // Nota: parroquiaNacimientoId no existe en el schema, solo parroquiaResidencia (string) y parroquiaProcedencia (string)
 
     // Paso 5 - Información Académica
-    if (
-      !estudiante.carrera ||
-      estudiante.carrera === 'NA' ||
-      !estudiante.modalidadCarrera ||
-      !estudiante.jornadaCarrera ||
-      !estudiante.fechaInicioCarrera ||
-      !estudiante.fechaMatricula ||
-      !estudiante.tipoMatricula ||
-      !estudiante.duracionPeriodoAcademico ||
-      !estudiante.nivelAcademico ||
-      !estudiante.paralelo
-    ) {
-      return false;
-    }
-    // tipoColegioId es opcional ahora (puede ser null para colegios nuevos)
-
-    // Paso 6 - Información Económica
-    if (!estudiante.estudianteOcupacion || !estudiante.ingresosEstudiante) {
+    if (!esValido(estudiante.carrera) || 
+        !esValido(estudiante.modalidadCarrera) || 
+        !esValido(estudiante.jornadaCarrera)) {
       return false;
     }
 
-    // Paso 7 - Prácticas Preprofesionales
-    if (!estudiante.haRealizadoPracticasPreprofesionales) {
-      return false;
-    }
-    // Si ha realizado prácticas, verificar campos relacionados
-    if (estudiante.haRealizadoPracticasPreprofesionales === 'SI') {
-      if (
-        !estudiante.nroHorasPracticasPreprofesionalesPorPeriodo ||
-        estudiante.nroHorasPracticasPreprofesionalesPorPeriodo === 'NA' ||
-        !estudiante.entornoInstitucionalPracticasProfesionales ||
-        !estudiante.sectorEconomicoPracticaProfesional
-      ) {
-        return false;
-      }
-    }
-
-    // Campos de Contacto (también requeridos)
-    if (
-      !estudiante.correoElectronico ||
-      estudiante.correoElectronico === 'NA' ||
-      !estudiante.numeroCelular ||
-      !estudiante.direccionDomicilio ||
-      estudiante.direccionDomicilio === 'NA'
-    ) {
+    // Paso 10 - Contacto (dentro de los primeros 7 pasos visibles)
+    if (!esValido(estudiante.correoElectronico) || 
+        !esValido(estudiante.numeroCelular)) {
       return false;
     }
 
