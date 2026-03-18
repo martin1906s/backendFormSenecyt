@@ -153,6 +153,14 @@ export class EstudianteService {
       nivelFormacionMadre: firstEnum(NivelFormacionMadre),
       ingresoTotalHogar: 'NA',
       cantidadMiembrosHogar: 1,
+      // Datos de facturación: por defecto en NA para que no falle hasta que el usuario complete la Fase 2
+      tipoComprobante: 'NA',
+      facturacionNombre: 'NA',
+      facturacionTipoIdentificacion: 'NA',
+      facturacionIdentificacion: 'NA',
+      facturacionDireccion: 'NA',
+      facturacionCorreo: 'NA',
+      facturacionTelefono: 'NA',
       composicionFamiliar: [],
       ingresosFamiliares: [],
     };
@@ -348,6 +356,15 @@ export class EstudianteService {
         dataToCreate.copiaPapeleta = 'NA';
       }
 
+      // Normalizar certificadoRegistroTitulo: string vacío → "NA"
+      if (dataToCreate.certificadoRegistroTitulo !== undefined && dataToCreate.certificadoRegistroTitulo !== null) {
+        if (dataToCreate.certificadoRegistroTitulo === '') {
+          dataToCreate.certificadoRegistroTitulo = 'NA';
+        }
+      } else if (dataToCreate.certificadoRegistroTitulo === undefined) {
+        dataToCreate.certificadoRegistroTitulo = 'NA';
+      }
+
       // Normalizar tipoColegioId: si viene vacío o undefined, dejarlo como null (para colegios nuevos)
       if (dataToCreate.tipoColegioId !== undefined) {
         if (dataToCreate.tipoColegioId === '' || dataToCreate.tipoColegioId === null) {
@@ -538,6 +555,31 @@ export class EstudianteService {
     return true;
   }
 
+  /**
+   * Verifica si los datos de facturación están completos (Fase 2 - Paso 13)
+   */
+  private esFacturacionCompleta(estudiante: any): boolean {
+    if (!estudiante) return false;
+
+    const esValido = (valor: any): boolean => {
+      return valor !== null && valor !== undefined && valor !== '' && valor !== 'NA';
+    };
+
+    if (
+      !esValido(estudiante.tipoComprobante) ||
+      !esValido(estudiante.facturacionNombre) ||
+      !esValido(estudiante.facturacionTipoIdentificacion) ||
+      !esValido(estudiante.facturacionIdentificacion) ||
+      !esValido(estudiante.facturacionDireccion) ||
+      !esValido(estudiante.facturacionCorreo) ||
+      !esValido(estudiante.facturacionTelefono)
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   async findOneByCedula(tipoDocumento: string, numeroIdentificacion: string) {
     const estudiante = await this.prisma.estudiante.findFirst({
       where: {
@@ -564,13 +606,19 @@ export class EstudianteService {
       return null;
     }
 
-    // Verificar si el registro está completo
-    const registroCompletado = this.verificarRegistroCompleto(estudiante);
+    // Flags de estado de fases
+    const registroFichaEstudiantilCompletado = this.verificarRegistroCompleto(estudiante);
+    // Por ahora, la lógica exacta de Fase Socioeconómica (pasos 8-12) no está totalmente definida en backend,
+    // así que se deja en false hasta que negocio/academia definan los campos críticos.
+    const registroFichaSocioeconomicaCompletado = false;
+    const registroDatosFacturacionCompletado = this.esFacturacionCompleta(estudiante);
 
-    // Agregar el campo registroCompletado a la respuesta
+    // Agregar los flags de estado a la respuesta
     return {
       ...estudiante,
-      registroCompletado,
+      registroFichaEstudiantilCompletado,
+      registroFichaSocioeconomicaCompletado,
+      registroDatosFacturacionCompletado,
     };
   }
 
@@ -772,6 +820,15 @@ export class EstudianteService {
         }
       } else if (data.copiaPapeleta === undefined) {
         data.copiaPapeleta = 'NA';
+      }
+
+      // Normalizar certificadoRegistroTitulo: string vacío → "NA"
+      if (data.certificadoRegistroTitulo !== undefined && data.certificadoRegistroTitulo !== null) {
+        if (data.certificadoRegistroTitulo === '') {
+          data.certificadoRegistroTitulo = 'NA';
+        }
+      } else if (data.certificadoRegistroTitulo === undefined) {
+        data.certificadoRegistroTitulo = 'NA';
       }
 
       // Normalizar tipoColegioId: si viene vacío o undefined, dejarlo como null (para colegios nuevos)

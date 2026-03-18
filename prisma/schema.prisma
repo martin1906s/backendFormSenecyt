@@ -169,9 +169,18 @@ model Estudiante {
   tituloBachiller                                                    String                                     @default("NA")
   copiaCedula                                                        String                                     @default("NA")
   copiaPapeleta                                                      String                                     @default("NA")
+  certificadoRegistroTitulo                                         String                                     @default("NA")
   totalEgresos                                                       String                                     @default("NA")
   violenciaFamiliar                                                  String                                     @default("NA")
   zonaVivienda                                                       String                                     @default("NA")
+  // Datos de facturación (Fase 2)
+  tipoComprobante                                                    String                                     @default("NA")
+  facturacionNombre                                                  String                                     @default("NA")
+  facturacionTipoIdentificacion                                      String                                     @default("NA")
+  facturacionIdentificacion                                          String                                     @default("NA")
+  facturacionDireccion                                               String                                     @default("NA")
+  facturacionCorreo                                                  String                                     @default("NA")
+  facturacionTelefono                                                String                                     @default("NA")
   nacionalidadId                                                     String?
   puebloId                                                           String?
   sectorEconomicoId                                                  String?

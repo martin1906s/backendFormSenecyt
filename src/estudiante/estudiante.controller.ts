@@ -133,9 +133,9 @@ export class EstudianteController {
     if (!file) {
       throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
     }
-    // Solo aceptar PDFs
-    if (file.mimetype !== 'application/pdf') {
-      throw new BadRequestException('Solo se permiten archivos PDF.');
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.');
     }
     const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'copia-cedula');
     return { url };
@@ -162,9 +162,9 @@ export class EstudianteController {
     if (!file) {
       throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
     }
-    // Solo aceptar PDFs
-    if (file.mimetype !== 'application/pdf') {
-      throw new BadRequestException('Solo se permiten archivos PDF.');
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.');
     }
     const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'copia-papeleta');
     return { url };
@@ -172,6 +172,35 @@ export class EstudianteController {
 
   @Post('delete-copia-papeleta')
   async deleteCopiaPapeleta(@Body() body: { url: string }): Promise<{ ok: boolean }> {
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket titulo');
+    }
+    await this.storage.deleteByPublicUrl(url);
+    return { ok: true };
+  }
+
+  @Post('upload-certificado-registro-titulo')
+  @UseInterceptors(FileInterceptor('archivo'))
+  async uploadCertificadoRegistroTitulo(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'certificado-registro-titulo');
+    return { url };
+  }
+
+  @Post('delete-certificado-registro-titulo')
+  async deleteCertificadoRegistroTitulo(@Body() body: { url: string }): Promise<{ ok: boolean }> {
     const url = body?.url;
     if (!url || typeof url !== 'string') {
       throw new BadRequestException('Se requiere la URL del archivo (url)');

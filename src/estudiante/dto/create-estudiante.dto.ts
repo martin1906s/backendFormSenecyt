@@ -1,4 +1,20 @@
-import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsNumber, Min, IsArray, ValidateNested, IsBoolean, MaxLength, Validate } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  Min,
+  IsArray,
+  ValidateNested,
+  IsBoolean,
+  MaxLength,
+  Validate,
+  IsEmail,
+  Matches,
+  IsIn,
+} from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { CreateComposicionFamiliarDto } from './create-composicion-familiar.dto';
 import { CreateIngresoFamiliarDto } from './create-ingreso-familiar.dto';
@@ -375,6 +391,51 @@ export class CreateEstudianteDto {
   @IsOptional()
   numeroConvencional?: string;
 
+  // -------------------------
+  // Datos de Facturación (Fase 2)
+  // -------------------------
+
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['FACTURA', 'NOTA_VENTA'])
+  tipoComprobante: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(150)
+  facturacionNombre: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['CEDULA', 'RUC'])
+  facturacionTipoIdentificacion: string;
+
+  @IsString()
+  @IsNotEmpty()
+  // Para simplificar: acepta 10 (cédula) o 13 (RUC) dígitos; la lógica específica por tipo se puede refinar luego
+  @Matches(/^\d{10}$|^\d{13}$/, {
+    message: 'facturacionIdentificacion debe tener 10 dígitos para cédula o 13 para RUC',
+  })
+  facturacionIdentificacion: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  facturacionDireccion: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @MaxLength(150)
+  facturacionCorreo: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(20)
+  @Matches(/^[0-9+\-\s]+$/, {
+    message: 'facturacionTelefono solo puede contener dígitos, espacios, + o -',
+  })
+  facturacionTelefono: string;
+
   @IsString()
   @IsOptional()
   presentaCarnetDiscapacidad?: string;
@@ -398,6 +459,10 @@ export class CreateEstudianteDto {
   @IsString()
   @IsOptional()
   copiaPapeleta?: string;
+
+  @IsString()
+  @IsOptional()
+  certificadoRegistroTitulo?: string;
 
   @IsString()
   @IsOptional()
