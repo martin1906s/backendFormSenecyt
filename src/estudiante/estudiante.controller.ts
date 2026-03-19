@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { EstudianteService } from './estudiante.service';
-import { CloudinaryStorageService } from './cloudinary-storage.service';
+import { SupabaseStorageService } from './supabase-storage.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import {
@@ -28,6 +28,7 @@ import {
   Discapacidad,
   TipoDiscapacidad,
   TipoColegio,
+  Pais,
   ModalidadCarrera,
   JornadaCarrera,
   TipoMatricula,
@@ -56,115 +57,181 @@ import {
   NivelFormacionMadre,
   DisenoCurricular,
 } from '@prisma/client';
-
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
-const ALLOWED_IMAGES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const BUCKET_TITULO = 'titulo';
+const BUCKET_MAPS = 'maps';
 
 @Controller('estudiantes')
 export class EstudianteController {
   constructor(
     private readonly estudianteService: EstudianteService,
-    private readonly storage: CloudinaryStorageService,
+    private readonly storage: SupabaseStorageService,
   ) {}
-
-  // ─── Uploads de documentos ───────────────────────────────────────────────
 
   @Post('upload-titulo-bachiller')
   @UseInterceptors(FileInterceptor('archivo'))
   async uploadTituloBachiller(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
-    if (!file) throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
-    if (!ALLOWED_TYPES.includes(file.mimetype))
-      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP) o PDF.');
-    const url = await this.storage.upload(file, 'senecyt/titulo-bachiller');
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException(
+        'Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.',
+      );
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'titulo');
     return { url };
   }
 
   @Post('delete-titulo-bachiller')
   async deleteTituloBachiller(@Body() body: { url: string }): Promise<{ ok: boolean }> {
-    if (!body?.url) throw new BadRequestException('Se requiere la URL del archivo (url)');
-    await this.storage.deleteByUrl(body.url);
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket título de bachiller');
+    }
+    await this.storage.deleteByPublicUrl(url);
     return { ok: true };
   }
 
   @Post('upload-croquis-vivienda')
   @UseInterceptors(FileInterceptor('archivo'))
   async uploadCroquisVivienda(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
-    if (!file) throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
-    if (!ALLOWED_IMAGES.includes(file.mimetype))
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.mimetype)) {
       throw new BadRequestException('Solo se permiten imágenes (JPEG, PNG, WebP, GIF).');
-    const url = await this.storage.upload(file, 'senecyt/croquis-vivienda');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_MAPS, 'croquis');
     return { url };
   }
 
   @Post('delete-croquis-vivienda')
   async deleteCroquisVivienda(@Body() body: { url: string }): Promise<{ ok: boolean }> {
-    if (!body?.url) throw new BadRequestException('Se requiere la URL del archivo (url)');
-    await this.storage.deleteByUrl(body.url);
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_MAPS}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket maps');
+    }
+    await this.storage.deleteByPublicUrl(url);
     return { ok: true };
   }
 
   @Post('upload-copia-cedula')
   @UseInterceptors(FileInterceptor('archivo'))
   async uploadCopiaCedula(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
-    if (!file) throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
-    if (!ALLOWED_TYPES.includes(file.mimetype))
-      throw new BadRequestException('Tipo de archivo no permitido. Use imagen o PDF.');
-    const url = await this.storage.upload(file, 'senecyt/copia-cedula');
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'copia-cedula');
     return { url };
   }
 
   @Post('delete-copia-cedula')
   async deleteCopiaCedula(@Body() body: { url: string }): Promise<{ ok: boolean }> {
-    if (!body?.url) throw new BadRequestException('Se requiere la URL del archivo (url)');
-    await this.storage.deleteByUrl(body.url);
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket titulo');
+    }
+    await this.storage.deleteByPublicUrl(url);
     return { ok: true };
   }
 
   @Post('upload-copia-papeleta')
   @UseInterceptors(FileInterceptor('archivo'))
   async uploadCopiaPapeleta(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
-    if (!file) throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
-    if (!ALLOWED_TYPES.includes(file.mimetype))
-      throw new BadRequestException('Tipo de archivo no permitido. Use imagen o PDF.');
-    const url = await this.storage.upload(file, 'senecyt/copia-papeleta');
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'copia-papeleta');
     return { url };
   }
 
   @Post('delete-copia-papeleta')
   async deleteCopiaPapeleta(@Body() body: { url: string }): Promise<{ ok: boolean }> {
-    if (!body?.url) throw new BadRequestException('Se requiere la URL del archivo (url)');
-    await this.storage.deleteByUrl(body.url);
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket titulo');
+    }
+    await this.storage.deleteByPublicUrl(url);
     return { ok: true };
   }
 
   @Post('upload-certificado-registro-titulo')
   @UseInterceptors(FileInterceptor('archivo'))
   async uploadCertificadoRegistroTitulo(@UploadedFile() file: Express.Multer.File): Promise<{ url: string }> {
-    if (!file) throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
-    if (!ALLOWED_TYPES.includes(file.mimetype))
-      throw new BadRequestException('Tipo de archivo no permitido. Use imagen o PDF.');
-    const url = await this.storage.upload(file, 'senecyt/certificado-registro-titulo');
+    if (!file) {
+      throw new BadRequestException('Debe enviar un archivo (campo: archivo)');
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Tipo de archivo no permitido. Use imagen (JPEG, PNG, WebP, GIF) o PDF.');
+    }
+    const url = await this.storage.uploadToBucket(file, BUCKET_TITULO, 'certificado-registro-titulo');
     return { url };
   }
 
   @Post('delete-certificado-registro-titulo')
   async deleteCertificadoRegistroTitulo(@Body() body: { url: string }): Promise<{ ok: boolean }> {
-    if (!body?.url) throw new BadRequestException('Se requiere la URL del archivo (url)');
-    await this.storage.deleteByUrl(body.url);
+    const url = body?.url;
+    if (!url || typeof url !== 'string') {
+      throw new BadRequestException('Se requiere la URL del archivo (url)');
+    }
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://mmzmuldolhpgmkwaawgc.supabase.co';
+    const prefix = `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${BUCKET_TITULO}/`;
+    if (!url.startsWith(prefix)) {
+      throw new BadRequestException('Solo se puede eliminar un archivo del bucket titulo');
+    }
+    await this.storage.deleteByPublicUrl(url);
     return { ok: true };
   }
 
-  // ─── CRUD Estudiantes ─────────────────────────────────────────────────────
-
   @Post()
-  @UsePipes(new ValidationPipe({
-    whitelist: true,
+  @UsePipes(new ValidationPipe({ 
+    whitelist: true, 
     forbidNonWhitelisted: true,
     transform: true,
-    transformOptions: { enableImplicitConversion: true },
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
   }))
-  create(@Body() createEstudianteDto: CreateEstudianteDto) {
-    return this.estudianteService.create(createEstudianteDto);
+  create(
+    @Body() createEstudianteDto: CreateEstudianteDto,
+  ) {
+    try {
+      return this.estudianteService.create(createEstudianteDto);
+    } catch (error) {
+      console.error('Error en controller al crear estudiante:', error);
+      throw error;
+    }
   }
 
   @Post('guardar-paso')
@@ -175,11 +242,17 @@ export class EstudianteController {
 
   @Get('enums')
   async getEnums() {
+    // Cargar catálogos desde la base de datos
     const pueblosYNacionalidades = await this.estudianteService.getPueblosYNacionalidades();
     const paises = await this.estudianteService.getPaises();
     const provincias = await this.estudianteService.getProvincias();
     const cantones = await this.estudianteService.getCantones();
-
+    
+    console.log('PuebloNacionalidad en enums:', pueblosYNacionalidades.length, 'registros');
+    console.log('Paises en enums:', paises.length, 'registros');
+    console.log('Provincias en enums:', provincias.length, 'registros');
+    console.log('Cantones en enums:', cantones.length, 'registros');
+    
     return {
       TipoDocumento: Object.values(TipoDocumento),
       Sexo: Object.values(Sexo),
@@ -201,9 +274,15 @@ export class EstudianteController {
       EstudianteOcupacion: Object.values(EstudianteOcupacion),
       IngresosEstudiante: Object.values(IngresosEstudiante),
       BonoDesarrollo: Object.values(BonoDesarrollo),
-      HaRealizadoPracticasPreprofesionales: Object.values(HaRealizadoPracticasPreprofesionales),
-      EntornoInstitucionalPracticasProfesionales: Object.values(EntornoInstitucionalPracticasProfesionales),
-      SectorEconomicoPracticaProfesional: Object.values(SectorEconomicoPracticaProfesional),
+      HaRealizadoPracticasPreprofesionales: Object.values(
+        HaRealizadoPracticasPreprofesionales,
+      ),
+      EntornoInstitucionalPracticasProfesionales: Object.values(
+        EntornoInstitucionalPracticasProfesionales,
+      ),
+      SectorEconomicoPracticaProfesional: Object.values(
+        SectorEconomicoPracticaProfesional,
+      ),
       TipoBeca: Object.values(TipoBeca),
       PrimeraRazonBeca: Object.values(PrimeraRazonBeca),
       SegundaRazonBeca: Object.values(SegundaRazonBeca),
@@ -212,15 +291,20 @@ export class EstudianteController {
       QuintaRazonBeca: Object.values(QuintaRazonBeca),
       SextaRazonBeca: Object.values(SextaRazonBeca),
       FinanciamientoBeca: Object.values(FinanciamientoBeca),
-      ParticipaEnProyectoVinculacionSociedad: Object.values(ParticipaEnProyectoVinculacionSociedad),
-      TipoAlcanceProyectoVinculacion: Object.values(TipoAlcanceProyectoVinculacion),
+      ParticipaEnProyectoVinculacionSociedad: Object.values(
+        ParticipaEnProyectoVinculacionSociedad,
+      ),
+      TipoAlcanceProyectoVinculacion: Object.values(
+        TipoAlcanceProyectoVinculacion,
+      ),
       NivelFormacionPadre: Object.values(NivelFormacionPadre),
       NivelFormacionMadre: Object.values(NivelFormacionMadre),
       DisenoCurricular: Object.values(DisenoCurricular),
+      // Catálogos desde la base de datos
       PuebloNacionalidad: pueblosYNacionalidades.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo })),
       Pais: paises.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo })),
-      Provincia: provincias.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo, paisId: (p as any).paisId })),
-      Canton: cantones.map(c => ({ id: c.id, nombre: c.nombre, codigo: c.codigo, provinciaId: (c as any).provinciaId })),
+      Provincia: provincias.map(p => ({ id: p.id, nombre: p.nombre, codigo: p.codigo, paisId: p.paisId })),
+      Canton: cantones.map(c => ({ id: c.id, nombre: c.nombre, codigo: c.codigo, provinciaId: c.provinciaId })),
     };
   }
 
@@ -234,7 +318,10 @@ export class EstudianteController {
     @Query('tipoDocumento') tipoDocumento: string,
     @Query('numeroIdentificacion') numeroIdentificacion: string,
   ) {
-    return this.estudianteService.findOneByCedula(tipoDocumento, numeroIdentificacion);
+    return this.estudianteService.findOneByCedula(
+      tipoDocumento,
+      numeroIdentificacion,
+    );
   }
 
   @Get(':id')
@@ -244,7 +331,10 @@ export class EstudianteController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  update(@Param('id') id: string, @Body() updateEstudianteDto: UpdateEstudianteDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateEstudianteDto: UpdateEstudianteDto,
+  ) {
     return this.estudianteService.update(+id, updateEstudianteDto);
   }
 
