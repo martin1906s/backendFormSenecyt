@@ -466,6 +466,10 @@ export class CreateEstudianteDto {
 
   @IsString()
   @IsOptional()
+  justificacionRetrasoDocumentos?: string;
+
+  @IsString()
+  @IsOptional()
   anioGraduacion?: string;
 
   @IsString()

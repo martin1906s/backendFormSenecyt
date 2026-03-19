@@ -170,6 +170,7 @@ model Estudiante {
   copiaCedula                                                        String                                     @default("NA")
   copiaPapeleta                                                      String                                     @default("NA")
   certificadoRegistroTitulo                                         String                                     @default("NA")
+  justificacionRetrasoDocumentos                                     String?
   totalEgresos                                                       String                                     @default("NA")
   violenciaFamiliar                                                  String                                     @default("NA")
   zonaVivienda                                                       String                                     @default("NA")
