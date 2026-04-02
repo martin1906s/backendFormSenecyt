@@ -362,6 +362,22 @@ export class CreateEstudianteDto {
 
   @IsString()
   @IsOptional()
+  contactoEmergenciaNombre?: string;
+
+  @IsString()
+  @IsOptional()
+  contactoEmergenciaParentesco?: string;
+
+  @IsString()
+  @IsOptional()
+  contactoEmergenciaTelefono?: string;
+
+  @IsString()
+  @IsOptional()
+  contactoEmergenciaCorreo?: string;
+
+  @IsString()
+  @IsOptional()
   enfermedadCatastrofica?: string;
 
   @IsEnum(NivelFormacionPadre)

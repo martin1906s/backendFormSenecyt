@@ -123,6 +123,10 @@ model Estudiante {
   referenciaPersonalNombre                                           String                                     @default("NA")
   referenciaPersonalParentesco                                       String                                     @default("NA")
   referenciaPersonalTelefono                                         String                                     @default("NA")
+  contactoEmergenciaNombre                                           String                                     @default("NA")
+  contactoEmergenciaParentesco                                       String                                     @default("NA")
+  contactoEmergenciaTelefono                                         String                                     @default("NA")
+  contactoEmergenciaCorreo                                           String                                     @default("NA")
   anioGraduacion                                                     String                                     @default("NA")
   barrioSector                                                       String                                     @default("NA")
   cantidadBanos                                                      Int?
